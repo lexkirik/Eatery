@@ -24,7 +24,6 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
         view.addSubview(mapView)
         setMapConstraints()
         view.addSubview(userMenuButton)
-        setUserMenuButtonConstraints()
         
         mapView.delegate = self
         locationManager.delegate = self
@@ -100,27 +99,20 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
     // MARK: - User menu
     
     private let userMenuButton: UIButton = {
-        let button = UIButton(type: .custom)
-        button.frame = CGRect(x: 50, y: 50, width: 50, height: 50)
+        let button = UIButton(frame: CGRect(x: 300, y: 100, width: 50, height: 50))
         button.setTitle("U", for: .normal)
         button.setTitleColor(.white, for: .normal)
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 34)
         button.translatesAutoresizingMaskIntoConstraints = true
-        button.layer.cornerRadius = 0.5 * button.frame.width
+        button.layer.cornerRadius = button.frame.size.width / 2.0
         button.clipsToBounds = true
         button.backgroundColor = .blue
         return button
     }()
     
-    private func setUserMenuButtonConstraints() {
-        userMenuButton.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.top.equalToSuperview().offset(50)
-        }
-    }
-    
     @objc func userMenuButtonClicked() {
         print("Clicked user menu button")
     }
+
 }
 

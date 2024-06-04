@@ -8,20 +8,36 @@
 
 /* Begin PBXBuildFile section */
 		527E59A42C0A41090088D2F0 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 527E59A32C0A41090088D2F0 /* GoogleService-Info.plist */; };
-		527E59A62C0A43450088D2F0 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 527E59A52C0A43450088D2F0 /* FirebaseFirestore */; };
-		527E59A82C0A43450088D2F0 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 527E59A72C0A43450088D2F0 /* FirebaseStorage */; };
 		52888FBE2C08ED9E00A611E7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52888FBD2C08ED9E00A611E7 /* AppDelegate.swift */; };
 		52888FC02C08ED9E00A611E7 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52888FBF2C08ED9E00A611E7 /* SceneDelegate.swift */; };
 		52888FC22C08ED9E00A611E7 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52888FC12C08ED9E00A611E7 /* ViewController.swift */; };
 		52888FC52C08ED9E00A611E7 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 52888FC42C08ED9E00A611E7 /* Base */; };
 		52888FC72C08ED9F00A611E7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 52888FC62C08ED9F00A611E7 /* Assets.xcassets */; };
 		52888FCA2C08ED9F00A611E7 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 52888FC92C08ED9F00A611E7 /* Base */; };
-		52888FD32C08F1C000A611E7 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 52888FD22C08F1C000A611E7 /* SnapKit */; };
-		52888FD52C08F1C000A611E7 /* SnapKit-Dynamic in Frameworks */ = {isa = PBXBuildFile; productRef = 52888FD42C08F1C000A611E7 /* SnapKit-Dynamic */; };
+		52C86AF22C0E445300706FA1 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 52C86AF12C0E445300706FA1 /* FirebaseAuth */; };
+		52C86AF52C0E449C00706FA1 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 52C86AF42C0E449C00706FA1 /* SnapKit */; };
+		52C86AF72C0E449C00706FA1 /* SnapKit-Dynamic in Frameworks */ = {isa = PBXBuildFile; productRef = 52C86AF62C0E449C00706FA1 /* SnapKit-Dynamic */; };
+		52C86AF92C0E456000706FA1 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 52C86AF82C0E456000706FA1 /* FirebaseFirestore */; };
+		52C86AFB2C0E456600706FA1 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 52C86AFA2C0E456600706FA1 /* FirebaseDatabase */; };
+		52C86AFD2C0E457400706FA1 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 52C86AFC2C0E457400706FA1 /* FirebaseStorage */; };
+		52C86AFE2C0E459900706FA1 /* SnapKit-Dynamic in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 52C86AF62C0E449C00706FA1 /* SnapKit-Dynamic */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		52D435FD2C0A4B15007FD9E4 /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D435FC2C0A4B15007FD9E4 /* SignUpViewController.swift */; };
 		52D435FF2C0A4DBC007FD9E4 /* SignUpElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D435FE2C0A4DBC007FD9E4 /* SignUpElement.swift */; };
-		52D436042C0B5618007FD9E4 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 52D436032C0B5618007FD9E4 /* FirebaseAuth */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		523074992C0E3CFB005AC59B /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				52C86AFE2C0E459900706FA1 /* SnapKit-Dynamic in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		527E59A32C0A41090088D2F0 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -42,11 +58,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				52888FD32C08F1C000A611E7 /* SnapKit in Frameworks */,
-				52D436042C0B5618007FD9E4 /* FirebaseAuth in Frameworks */,
-				527E59A82C0A43450088D2F0 /* FirebaseStorage in Frameworks */,
-				52888FD52C08F1C000A611E7 /* SnapKit-Dynamic in Frameworks */,
-				527E59A62C0A43450088D2F0 /* FirebaseFirestore in Frameworks */,
+				52C86AFB2C0E456600706FA1 /* FirebaseDatabase in Frameworks */,
+				52C86AF22C0E445300706FA1 /* FirebaseAuth in Frameworks */,
+				52C86AF92C0E456000706FA1 /* FirebaseFirestore in Frameworks */,
+				52C86AF52C0E449C00706FA1 /* SnapKit in Frameworks */,
+				52C86AF72C0E449C00706FA1 /* SnapKit-Dynamic in Frameworks */,
+				52C86AFD2C0E457400706FA1 /* FirebaseStorage in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -104,6 +121,7 @@
 				52888FB62C08ED9E00A611E7 /* Sources */,
 				52888FB72C08ED9E00A611E7 /* Frameworks */,
 				52888FB82C08ED9E00A611E7 /* Resources */,
+				523074992C0E3CFB005AC59B /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -111,11 +129,12 @@
 			);
 			name = Eatery;
 			packageProductDependencies = (
-				52888FD22C08F1C000A611E7 /* SnapKit */,
-				52888FD42C08F1C000A611E7 /* SnapKit-Dynamic */,
-				527E59A52C0A43450088D2F0 /* FirebaseFirestore */,
-				527E59A72C0A43450088D2F0 /* FirebaseStorage */,
-				52D436032C0B5618007FD9E4 /* FirebaseAuth */,
+				52C86AF12C0E445300706FA1 /* FirebaseAuth */,
+				52C86AF42C0E449C00706FA1 /* SnapKit */,
+				52C86AF62C0E449C00706FA1 /* SnapKit-Dynamic */,
+				52C86AF82C0E456000706FA1 /* FirebaseFirestore */,
+				52C86AFA2C0E456600706FA1 /* FirebaseDatabase */,
+				52C86AFC2C0E457400706FA1 /* FirebaseStorage */,
 			);
 			productName = Eatery;
 			productReference = 52888FBA2C08ED9E00A611E7 /* Eatery.app */;
@@ -146,8 +165,8 @@
 			);
 			mainGroup = 52888FB12C08ED9D00A611E7;
 			packageReferences = (
-				52888FD12C08F1C000A611E7 /* XCRemoteSwiftPackageReference "SnapKit" */,
-				527E59A22C0A3F480088D2F0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				52C86AF02C0E441E00706FA1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				52C86AF32C0E449C00706FA1 /* XCRemoteSwiftPackageReference "SnapKit" */,
 			);
 			productRefGroup = 52888FBB2C08ED9E00A611E7 /* Products */;
 			projectDirPath = "";
@@ -336,6 +355,7 @@
 				DEVELOPMENT_TEAM = CQAJT5B3K8;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Eatery/Info.plist;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "to get your location";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -364,6 +384,7 @@
 				DEVELOPMENT_TEAM = CQAJT5B3K8;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Eatery/Info.plist;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "to get your location";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -406,7 +427,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		527E59A22C0A3F480088D2F0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+		52C86AF02C0E441E00706FA1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
 			requirement = {
@@ -414,7 +435,7 @@
 				minimumVersion = 10.27.0;
 			};
 		};
-		52888FD12C08F1C000A611E7 /* XCRemoteSwiftPackageReference "SnapKit" */ = {
+		52C86AF32C0E449C00706FA1 /* XCRemoteSwiftPackageReference "SnapKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SnapKit/SnapKit";
 			requirement = {
@@ -425,30 +446,35 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		527E59A52C0A43450088D2F0 /* FirebaseFirestore */ = {
+		52C86AF12C0E445300706FA1 /* FirebaseAuth */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 527E59A22C0A3F480088D2F0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseFirestore;
+			package = 52C86AF02C0E441E00706FA1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
 		};
-		527E59A72C0A43450088D2F0 /* FirebaseStorage */ = {
+		52C86AF42C0E449C00706FA1 /* SnapKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 527E59A22C0A3F480088D2F0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseStorage;
-		};
-		52888FD22C08F1C000A611E7 /* SnapKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 52888FD12C08F1C000A611E7 /* XCRemoteSwiftPackageReference "SnapKit" */;
+			package = 52C86AF32C0E449C00706FA1 /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
 		};
-		52888FD42C08F1C000A611E7 /* SnapKit-Dynamic */ = {
+		52C86AF62C0E449C00706FA1 /* SnapKit-Dynamic */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 52888FD12C08F1C000A611E7 /* XCRemoteSwiftPackageReference "SnapKit" */;
+			package = 52C86AF32C0E449C00706FA1 /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = "SnapKit-Dynamic";
 		};
-		52D436032C0B5618007FD9E4 /* FirebaseAuth */ = {
+		52C86AF82C0E456000706FA1 /* FirebaseFirestore */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 527E59A22C0A3F480088D2F0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseAuth;
+			package = 52C86AF02C0E441E00706FA1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+		52C86AFA2C0E456600706FA1 /* FirebaseDatabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 52C86AF02C0E441E00706FA1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseDatabase;
+		};
+		52C86AFC2C0E457400706FA1 /* FirebaseStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 52C86AF02C0E441E00706FA1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseStorage;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
