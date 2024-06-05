@@ -6,34 +6,60 @@
 //
 
 import UIKit
-import MapKit
 import SnapKit
 import CoreLocation
 import FirebaseAuth
+import GoogleMaps
+import GooglePlaces
 
-class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate, UINavigationControllerDelegate {
+class ViewController: UIViewController, CLLocationManagerDelegate {
 
     // MARK: - Constants
-    
-    private var locationManager = CLLocationManager()
+    private var mapView: GMSMapView!
+    private var locationManager: CLLocationManager!
+    private var currentLocation: CLLocation?
+    private var placesClient: GMSPlacesClient!
+    private var preciseLocationZoomLevel: Float = 15.0
+    private var approximateLocationZoomLevel: Float = 10.0
     
     // MARK: - viewDidLoad, viewWillAppear
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.addSubview(mapView)
-        setMapConstraints()
-        view.addSubview(userMenuButton)
         
-        mapView.delegate = self
-        locationManager.delegate = self
+        locationManager = CLLocationManager()
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestWhenInUseAuthorization()
+        locationManager.distanceFilter = 50
         locationManager.startUpdatingLocation()
+        locationManager.delegate = self
         
-        let gestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(chooseLocation(gestureRecognizer:)))
-        gestureRecognizer.minimumPressDuration = 2
-        mapView.addGestureRecognizer(gestureRecognizer)
+        placesClient = GMSPlacesClient.shared()
+        
+        let defaultLocation = CLLocation(latitude: -33.869405, longitude: 151.199)
+        
+        let zoomLevel = locationManager.accuracyAuthorization == .fullAccuracy ? preciseLocationZoomLevel : approximateLocationZoomLevel
+        let options = GMSMapViewOptions()
+        options.camera = GMSCameraPosition.camera(
+            withLatitude: defaultLocation.coordinate.latitude,
+            longitude: defaultLocation.coordinate.longitude,
+            zoom: zoomLevel
+        )
+        options.frame = view.bounds
+        mapView = GMSMapView(options: options)
+        mapView.settings.myLocationButton = true
+        mapView.settings.zoomGestures = true
+        mapView.settings.scrollGestures = true
+        mapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        mapView.isMyLocationEnabled = true
+        
+        let gestureRecogniser = UILongPressGestureRecognizer(target: self, action: #selector(chooseLocation(gestureRecognizer:)))
+        gestureRecogniser.minimumPressDuration = 2
+        mapView.addGestureRecognizer(gestureRecogniser)
+        
+        view.addSubview(mapView)
+        mapView.isHidden = true
+        view.addSubview(userMenuButton)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -64,45 +90,37 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
     }
     // MARK: - Map functions
     
-    private let mapView: MKMapView = {
-        let map = MKMapView()
-        map.overrideUserInterfaceStyle = .dark
-        return map
-    }()
-
-    private func setMapConstraints() {
-        mapView.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.top.equalToSuperview()
-            make.bottom.equalToSuperview()
-            make.width.equalToSuperview()
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        let location: CLLocation = locations.last!
+        let zoomLevel = locationManager.accuracyAuthorization == .fullAccuracy ? preciseLocationZoomLevel : approximateLocationZoomLevel
+        let camera = GMSCameraPosition.camera(withLatitude: location.coordinate.latitude, longitude: location.coordinate.longitude, zoom: zoomLevel)
+        
+        if mapView.isHidden {
+            mapView.isHidden = false
+            mapView.camera = camera
+        } else {
+            mapView.animate(to: camera)
         }
     }
     
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        let location = CLLocationCoordinate2D(latitude: locations[0].coordinate.latitude, longitude: locations[0].coordinate.longitude)
-        let span = MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)
-        let region = MKCoordinateRegion(center: location, span: span)
-        mapView.setRegion(region, animated: true)
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: any Error) {
+        locationManager.stopUpdatingLocation()
+        print("Error: \(error)")
     }
     
     @objc private func chooseLocation(gestureRecognizer: UILongPressGestureRecognizer) {
-        
-        if gestureRecognizer.state == .began {
-            let touchedPoint = gestureRecognizer.location(in: mapView)
-            let touchedCoordinates = mapView.convert(touchedPoint, toCoordinateFrom: mapView)
-            
-            let annotation = MKPointAnnotation()
-            annotation.coordinate = touchedCoordinates
-            annotation.title = "Restaurant"
-            mapView.addAnnotation(annotation)
-        }
-    }
+
+         if gestureRecognizer.state == .began {
+             mapView.clear()
+             
+             
+         }
+     }
     
     // MARK: - User menu
     
     private let userMenuButton: UIButton = {
-        let button = UIButton(frame: CGRect(x: 300, y: 100, width: 50, height: 50))
+        let button = UIButton(frame: CGRect(x: 320, y: 80, width: 50, height: 50))
         button.setTitle("U", for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 34)

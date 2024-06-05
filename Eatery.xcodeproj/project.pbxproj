@@ -21,6 +21,8 @@
 		52C86AFB2C0E456600706FA1 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 52C86AFA2C0E456600706FA1 /* FirebaseDatabase */; };
 		52C86AFD2C0E457400706FA1 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 52C86AFC2C0E457400706FA1 /* FirebaseStorage */; };
 		52C86AFE2C0E459900706FA1 /* SnapKit-Dynamic in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 52C86AF62C0E449C00706FA1 /* SnapKit-Dynamic */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		52C86B042C10694100706FA1 /* GoogleMaps in Frameworks */ = {isa = PBXBuildFile; productRef = 52C86B032C10694100706FA1 /* GoogleMaps */; };
+		52C86B072C108B3600706FA1 /* GooglePlaces in Frameworks */ = {isa = PBXBuildFile; productRef = 52C86B062C108B3600706FA1 /* GooglePlaces */; };
 		52D435FD2C0A4B15007FD9E4 /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D435FC2C0A4B15007FD9E4 /* SignUpViewController.swift */; };
 		52D435FF2C0A4DBC007FD9E4 /* SignUpElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D435FE2C0A4DBC007FD9E4 /* SignUpElement.swift */; };
 /* End PBXBuildFile section */
@@ -59,10 +61,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				52C86AFB2C0E456600706FA1 /* FirebaseDatabase in Frameworks */,
+				52C86B072C108B3600706FA1 /* GooglePlaces in Frameworks */,
 				52C86AF22C0E445300706FA1 /* FirebaseAuth in Frameworks */,
 				52C86AF92C0E456000706FA1 /* FirebaseFirestore in Frameworks */,
 				52C86AF52C0E449C00706FA1 /* SnapKit in Frameworks */,
 				52C86AF72C0E449C00706FA1 /* SnapKit-Dynamic in Frameworks */,
+				52C86B042C10694100706FA1 /* GoogleMaps in Frameworks */,
 				52C86AFD2C0E457400706FA1 /* FirebaseStorage in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -135,6 +139,8 @@
 				52C86AF82C0E456000706FA1 /* FirebaseFirestore */,
 				52C86AFA2C0E456600706FA1 /* FirebaseDatabase */,
 				52C86AFC2C0E457400706FA1 /* FirebaseStorage */,
+				52C86B032C10694100706FA1 /* GoogleMaps */,
+				52C86B062C108B3600706FA1 /* GooglePlaces */,
 			);
 			productName = Eatery;
 			productReference = 52888FBA2C08ED9E00A611E7 /* Eatery.app */;
@@ -167,6 +173,8 @@
 			packageReferences = (
 				52C86AF02C0E441E00706FA1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				52C86AF32C0E449C00706FA1 /* XCRemoteSwiftPackageReference "SnapKit" */,
+				52C86B022C10694100706FA1 /* XCRemoteSwiftPackageReference "ios-maps-sdk" */,
+				52C86B052C108B3600706FA1 /* XCRemoteSwiftPackageReference "ios-places-sdk" */,
 			);
 			productRefGroup = 52888FBB2C08ED9E00A611E7 /* Products */;
 			projectDirPath = "";
@@ -443,6 +451,22 @@
 				minimumVersion = 5.7.1;
 			};
 		};
+		52C86B022C10694100706FA1 /* XCRemoteSwiftPackageReference "ios-maps-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/googlemaps/ios-maps-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 9.0.0;
+			};
+		};
+		52C86B052C108B3600706FA1 /* XCRemoteSwiftPackageReference "ios-places-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/googlemaps/ios-places-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 9.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -475,6 +499,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 52C86AF02C0E441E00706FA1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseStorage;
+		};
+		52C86B032C10694100706FA1 /* GoogleMaps */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 52C86B022C10694100706FA1 /* XCRemoteSwiftPackageReference "ios-maps-sdk" */;
+			productName = GoogleMaps;
+		};
+		52C86B062C108B3600706FA1 /* GooglePlaces */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 52C86B052C108B3600706FA1 /* XCRemoteSwiftPackageReference "ios-places-sdk" */;
+			productName = GooglePlaces;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
