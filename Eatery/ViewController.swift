@@ -32,7 +32,7 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
         locationManager.startUpdatingLocation()
         
         let gestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(chooseLocation(gestureRecognizer:)))
-        gestureRecognizer.minimumPressDuration = 3
+        gestureRecognizer.minimumPressDuration = 2
         mapView.addGestureRecognizer(gestureRecognizer)
     }
 
@@ -48,7 +48,10 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
         let logOut = UIAction(title: "Log out") { _ in
             do {
                 try Auth.auth().signOut()
-                self.present(SignUpViewController(), animated: true)
+                let destinationVC = SignUpViewController()
+                destinationVC.modalPresentationStyle = .fullScreen
+                destinationVC.modalTransitionStyle = .crossDissolve
+                self.present(destinationVC, animated: true)
             } catch {
                 print(error)
             }

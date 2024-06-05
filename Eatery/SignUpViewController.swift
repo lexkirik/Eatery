@@ -71,7 +71,10 @@ class SignUpViewController: UIViewController {
                     if error != nil {
                         self.makeAlert(titleInput: "Error", messageInput: error?.localizedDescription ?? "Error!")
                     } else {
-                        self.present(ViewController(), animated: true, completion: nil)
+                        let destinationVC = ViewController()
+                        destinationVC.modalPresentationStyle = .fullScreen
+                        destinationVC.modalTransitionStyle = .crossDissolve
+                        self.present(destinationVC, animated: true, completion: nil)
                     }
                 }
                 
@@ -91,7 +94,10 @@ class SignUpViewController: UIViewController {
                     if error != nil {
                         self.makeAlert(titleInput: "Error", messageInput: error?.localizedDescription ?? "Error!")
                     } else {
-                        self.present(ViewController(), animated: true, completion: nil)
+                        let destinationVC = ViewController()
+                        destinationVC.modalPresentationStyle = .fullScreen
+                        destinationVC.modalTransitionStyle = .crossDissolve
+                        self.present(destinationVC, animated: true, completion: nil)
                     }
                 }
                 
