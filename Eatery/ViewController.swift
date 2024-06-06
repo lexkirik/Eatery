@@ -12,8 +12,8 @@ import FirebaseAuth
 import GoogleMaps
 import GooglePlaces
 
-class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDelegate {
-
+class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDelegate, GMSAutocompleteViewControllerDelegate {
+    
     // MARK: - Constants
     private var mapView: GMSMapView!
     private var locationManager: CLLocationManager!
@@ -23,6 +23,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
     private var approximateLocationZoomLevel: Float = 10.0
     private let infoMarker = GMSMarker()
     
+    private var resultsViewController: GMSAutocompleteResultsViewController?
+    private var searchController: UISearchController?
     // MARK: - viewDidLoad, viewWillAppear
 
     override func viewDidLoad() {
@@ -59,6 +61,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
         view.addSubview(mapView)
         mapView.isHidden = true
         view.addSubview(userMenuButton)
+        view.addSubview(placeTextField)
+        setPlaceTextFieldConstraints()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -87,7 +91,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
         userMenuButton.showsMenuAsPrimaryAction = true
         userMenuButton.addTarget(nil, action: #selector(userMenuButtonClicked), for: .menuActionTriggered)
     }
-    // MARK: - Map functions
+    // MARK: - MapView functions
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         let location: CLLocation = locations.last!
@@ -115,6 +119,58 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
         infoMarker.infoWindowAnchor.y = 1
         infoMarker.map = mapView
         mapView.selectedMarker = infoMarker
+    }
+    
+    // MARK: - Search text field
+    
+    private let placeTextField: UITextField = {
+        let textField = UITextField()
+        textField.placeholder = "Search"
+        textField.translatesAutoresizingMaskIntoConstraints = true
+        textField.borderStyle = .roundedRect
+        textField.backgroundColor = UIColor(white: 0, alpha: 0.1)
+        textField.addTarget(nil, action: #selector(placeTextFieldTapped), for: .touchDown)
+        return textField
+    }()
+    
+    private func setPlaceTextFieldConstraints() {
+        placeTextField.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.top.equalTo(userMenuButton.snp.top).offset(10)
+            make.leading.equalToSuperview().offset(10)
+            make.trailing.equalTo(userMenuButton.snp.leading).offset(-10)
+            make.size.height.equalTo(30)
+        }
+    }
+    
+    @objc private func placeTextFieldTapped() {
+        let autocompleteController = GMSAutocompleteViewController()
+        autocompleteController.delegate = self
+        
+        let filter = GMSAutocompleteFilter()
+        filter.types = ["restaurant"]
+        filter.countries = ["US"]
+        autocompleteController.autocompleteFilter = filter
+        
+        let fields: GMSPlaceField = [.name, .placeID]
+        autocompleteController.placeFields = fields
+        
+        present(autocompleteController, animated: true, completion: nil)
+    }
+    
+    func viewController(_ viewController: GMSAutocompleteViewController, didAutocompleteWith place: GMSPlace) {
+        if let name = place.name {
+            placeTextField.text = name
+        }
+        dismiss(animated: true, completion: nil)
+    }
+    
+    func viewController(_ viewController: GMSAutocompleteViewController, didFailAutocompleteWithError error: any Error) {
+        print("Error: \(error.localizedDescription)")
+    }
+    
+    func wasCancelled(_ viewController: GMSAutocompleteViewController) {
+        dismiss(animated: true, completion: nil)
     }
     
     // MARK: - User menu
