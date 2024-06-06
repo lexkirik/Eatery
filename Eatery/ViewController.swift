@@ -12,7 +12,7 @@ import FirebaseAuth
 import GoogleMaps
 import GooglePlaces
 
-class ViewController: UIViewController, CLLocationManagerDelegate {
+class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDelegate {
 
     // MARK: - Constants
     private var mapView: GMSMapView!
@@ -21,6 +21,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     private var placesClient: GMSPlacesClient!
     private var preciseLocationZoomLevel: Float = 15.0
     private var approximateLocationZoomLevel: Float = 10.0
+    private let infoMarker = GMSMarker()
     
     // MARK: - viewDidLoad, viewWillAppear
 
@@ -46,16 +47,14 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
             zoom: zoomLevel
         )
         options.frame = view.bounds
+        
         mapView = GMSMapView(options: options)
         mapView.settings.myLocationButton = true
         mapView.settings.zoomGestures = true
         mapView.settings.scrollGestures = true
         mapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         mapView.isMyLocationEnabled = true
-        
-        let gestureRecogniser = UILongPressGestureRecognizer(target: self, action: #selector(chooseLocation(gestureRecognizer:)))
-        gestureRecogniser.minimumPressDuration = 2
-        mapView.addGestureRecognizer(gestureRecogniser)
+        mapView.delegate = self
         
         view.addSubview(mapView)
         mapView.isHidden = true
@@ -108,14 +107,15 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         print("Error: \(error)")
     }
     
-    @objc private func chooseLocation(gestureRecognizer: UILongPressGestureRecognizer) {
-
-         if gestureRecognizer.state == .began {
-             mapView.clear()
-             
-             
-         }
-     }
+    func mapView(_ mapView: GMSMapView, didTapPOIWithPlaceID placeID: String, name: String, location: CLLocationCoordinate2D) {
+        infoMarker.snippet = placeID
+        infoMarker.position = location
+        infoMarker.title = name
+        infoMarker.opacity = 0
+        infoMarker.infoWindowAnchor.y = 1
+        infoMarker.map = mapView
+        mapView.selectedMarker = infoMarker
+    }
     
     // MARK: - User menu
     
