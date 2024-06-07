@@ -7,7 +7,7 @@
 
 import UIKit
 
-class SignUpElement {
+struct SignUpElement {
     
     static func setTextLabel(name: String) -> UILabel {
         let label = UILabel()
