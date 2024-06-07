@@ -14,6 +14,7 @@ class SignUpViewController: UIViewController {
     
     // MARK: - Constants
     
+    private let labelApp = SignUpElement.setTextLabel(name: "Eatery")
     private let emailTextField = SignUpElement.setTextField(name: "Email")
     private let usernameTextField = SignUpElement.setTextField(name: "Username")
     private let passwordTextField = SignUpElement.setTextField(name: "Password")
@@ -28,9 +29,10 @@ class SignUpViewController: UIViewController {
         setTextFieldsAndButtons()
     }
     
-    // MARK: - Function to set stackViews and constraints
+    // MARK: - UIView elements and constraints
     
     private func setTextFieldsAndButtons() {
+        
         let stackFields = UIStackView(arrangedSubviews: [emailTextField, usernameTextField, passwordTextField])
         stackFields.axis = .vertical
         stackFields.spacing = 20
@@ -45,6 +47,12 @@ class SignUpViewController: UIViewController {
         
         view.addSubview(stackFields)
         view.addSubview(stackButtons)
+        view.addSubview(labelApp)
+        
+        labelApp.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.bottom.equalTo(stackFields.snp.top).offset(-50)
+        }
         
         stackFields.snp.makeConstraints { make in
             make.centerX.equalToSuperview()

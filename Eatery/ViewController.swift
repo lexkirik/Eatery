@@ -22,9 +22,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
     private var preciseLocationZoomLevel: Float = 15.0
     private var approximateLocationZoomLevel: Float = 10.0
     private let infoMarker = GMSMarker()
-    
-    private var resultsViewController: GMSAutocompleteResultsViewController?
-    private var searchController: UISearchController?
+
     // MARK: - viewDidLoad, viewWillAppear
 
     override func viewDidLoad() {

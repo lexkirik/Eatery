@@ -20,11 +20,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let currentUser = Auth.auth().currentUser
         
         if currentUser != nil {
-            let board = UIStoryboard(name: "Main", bundle: nil)
-            let viewContoller = board.instantiateViewController(identifier: "VC")
+            let viewContoller = ViewController()
             window?.rootViewController = viewContoller
+        } else {
+            let mainVC = SignUpViewController()
+            window?.rootViewController = mainVC
         }
-        
         guard let _ = (scene as? UIWindowScene) else { return }
     }
 
