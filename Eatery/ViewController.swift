@@ -12,7 +12,7 @@ import FirebaseAuth
 import GoogleMaps
 import GooglePlaces
 
-class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDelegate, GMSAutocompleteViewControllerDelegate {
+class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDelegate, GMSAutocompleteResultsViewControllerDelegate {
     
     // MARK: - Constants
     
@@ -21,6 +21,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
     private var preciseLocationZoomLevel: Float = 15.0
     private var approximateLocationZoomLevel: Float = 10.0
     private let infoMarker = GMSMarker()
+    private var resultsViewController: GMSAutocompleteResultsViewController?
+    private var searchController: UISearchController?
+    private var resultView: UITextView?
+    private var currentLocation: CLLocation?
     
     private var locationManager: CLLocationManager = {
         let locationManager = CLLocationManager()
@@ -45,14 +49,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
         return button
     }()
     
-    private let placeTextField: UITextField = {
-        let textField = UITextField()
-        textField.placeholder = "Search"
-        textField.translatesAutoresizingMaskIntoConstraints = true
-        textField.borderStyle = .roundedRect
-        textField.backgroundColor = UIColor(white: 0, alpha: 0.1)
-        textField.addTarget(nil, action: #selector(placeTextFieldTapped), for: .touchDown)
-        return textField
+    private let searchBarView: UIView = {
+        let subView = UIView()
+        return subView
     }()
     
     // MARK: - viewDidLoad
@@ -66,13 +65,24 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
         
         setMapView()
         mapView.delegate = self
-        mapView.isHidden = true
+
+        resultsViewController = GMSAutocompleteResultsViewController()
+        resultsViewController?.delegate = self
+        searchController = UISearchController(searchResultsController: resultsViewController)
+        searchController?.searchResultsUpdater = resultsViewController
         
+        searchBarView.addSubview((searchController?.searchBar)!)
+        searchController?.searchBar.sizeToFit()
+        searchController?.hidesNavigationBarDuringPresentation = false
+        definesPresentationContext = true
+        mapView.gestureRecognizers?.removeAll()
+        mapView.addSubview(searchBarView)
+        setSearchBarViewConstraints()
         view.addSubview(userMenuButton)
-        view.addSubview(placeTextField)
-        setPlaceTextFieldConstraints()
+
         setUserMenu()
         setUserMenuButtonConstraints()
+        mapView.isHidden = true
     }
 
     // MARK: - MapView functions
@@ -98,7 +108,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        let location: CLLocation = locations.last!
+        let location: CLLocation = locations.last ?? GlobalConstants.defaultLocation
         let zoomLevel = locationManager.accuracyAuthorization == .fullAccuracy ? preciseLocationZoomLevel : approximateLocationZoomLevel
         let camera = GMSCameraPosition.camera(
             withLatitude: location.coordinate.latitude,
@@ -129,55 +139,49 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
         mapView.selectedMarker = infoMarker
     }
     
-    // MARK: - Search textfield functions
+    // MARK: - Search functions
     
-    private func setPlaceTextFieldConstraints() {
-        placeTextField.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.top.equalTo(userMenuButton.snp.top).offset(10)
-            make.leading.equalToSuperview().offset(10)
-            make.trailing.equalToSuperview().offset(-90)
-            make.size.height.equalTo(30)
+    func resultsController(_ resultsController: GMSAutocompleteResultsViewController, didAutocompleteWith place: GMSPlace) {
+        searchController?.isActive = false
+        
+        func updateLocation(finished: () -> Void) {
+            locationManager(CLLocationManager(), didUpdateLocations: [CLLocation(latitude: place.coordinate.latitude, longitude: place.coordinate.longitude)])
+            
+            infoMarker.snippet = place.editorialSummary
+            infoMarker.position = place.coordinate
+            infoMarker.title = place.name
+            infoMarker.opacity = 0
+            infoMarker.infoWindowAnchor.y = 1
+            infoMarker.map = mapView
+            mapView.selectedMarker = infoMarker
+            
+            finished()
+        }
+        updateLocation {
+            mapView.translatesAutoresizingMaskIntoConstraints = true
         }
     }
     
-    @objc private func placeTextFieldTapped() {
-        let autocompleteController = GMSAutocompleteViewController()
-        autocompleteController.delegate = self
-        
-        let filter = GMSAutocompleteFilter()
-        filter.types = ["restaurant"]
-        filter.countries = ["US"]
-        autocompleteController.autocompleteFilter = filter
-        
-        let fields: GMSPlaceField = [.name, .placeID]
-        autocompleteController.placeFields = fields
-        
-        present(autocompleteController, animated: true, completion: nil)
-    }
-    
-    func viewController(_ viewController: GMSAutocompleteViewController, didAutocompleteWith place: GMSPlace) {
-        if let name = place.name {
-            placeTextField.text = name
-        }
-        dismiss(animated: true, completion: nil)
-    }
-    
-    func viewController(_ viewController: GMSAutocompleteViewController, didFailAutocompleteWithError error: any Error) {
+    func resultsController(_ resultsController: GMSAutocompleteResultsViewController, didFailAutocompleteWithError error: any Error) {
         print("Error: \(error.localizedDescription)")
     }
     
-    func wasCancelled(_ viewController: GMSAutocompleteViewController) {
-        dismiss(animated: true, completion: nil)
+    private func setSearchBarViewConstraints() {
+        searchBarView.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.top.equalToSuperview().offset(50)
+            make.leading.equalToSuperview()
+            make.size.height.equalTo(30)
+        }
     }
     
     // MARK: - User menu functions
     
     private func setUserMenuButtonConstraints() {
         userMenuButton.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(70)
-            make.trailing.equalToSuperview().offset(-30)
-            make.leading.equalTo(placeTextField.snp.trailing).offset(10)
+            make.top.equalToSuperview().offset(120)
+            make.trailing.equalToSuperview().offset(-15)
+            make.size.width.equalTo(50)
         }
     }
     
