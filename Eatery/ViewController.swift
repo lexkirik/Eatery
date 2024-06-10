@@ -18,7 +18,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
     
     private var mapView = GMSMapView()
     private var placesClient = GMSPlacesClient()
-    private var preciseLocationZoomLevel: Float = 15.0
+    private var preciseLocationZoomLevel: Float = 17.0
     private var approximateLocationZoomLevel: Float = 10.0
     private let infoMarker = GMSMarker()
     private var resultsViewController: GMSAutocompleteResultsViewController?
@@ -54,6 +54,13 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
         return subView
     }()
     
+    private var searchFilter: GMSAutocompleteFilter = {
+        let filter = GMSAutocompleteFilter()
+        filter.countries = ["US"]
+        filter.types = ["restaurant", "cafe"]
+        return filter
+    }()
+    
     // MARK: - viewDidLoad
 
     override func viewDidLoad() {
@@ -75,6 +82,13 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
         searchController?.searchBar.sizeToFit()
         searchController?.hidesNavigationBarDuringPresentation = false
         definesPresentationContext = true
+        
+        let center = CLLocationCoordinate2DMake(currentLocation?.coordinate.latitude ?? GlobalConstants.defaultLocation.coordinate.latitude, currentLocation?.coordinate.longitude ?? GlobalConstants.defaultLocation.coordinate.longitude)
+        let radius = 5000.0
+        searchFilter.locationBias = GMSPlaceCircularLocationOption(center, radius)
+        
+        resultsViewController?.autocompleteFilter = searchFilter
+        
         mapView.gestureRecognizers?.removeAll()
         mapView.addSubview(searchBarView)
         setSearchBarViewConstraints()
@@ -188,11 +202,16 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
     private func setUserMenu() {
         
         let myFriendsInfo = UIAction(title: "My friends") { _ in
-            
+            let destinationVC = FriendsRestaurantListVC()
+            destinationVC.modalPresentationStyle = .fullScreen
+            destinationVC.modalTransitionStyle = .crossDissolve
+            self.present(destinationVC, animated: true)
         }
+        
         let settings = UIAction(title: "Settings") { _ in
             
         }
+        
         let logOut = UIAction(title: "Log out") { _ in
             do {
                 try Auth.auth().signOut()
