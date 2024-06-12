@@ -63,10 +63,3 @@ class FriendsTableViewCell: UITableViewCell {
         friendsRestaurant.text = model.friendsRestaurant
     }
 }
-
-// MARK: - Structure FriendRestaurantOption
-
-struct FriendRestaurantOption {
-    let friendName: String
-    let friendsRestaurant: String
-}

@@ -143,14 +143,25 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
         print("Error: \(error)")
     }
     
+    // MARK: - Marker functions
+    
     func mapView(_ mapView: GMSMapView, didTapPOIWithPlaceID placeID: String, name: String, location: CLLocationCoordinate2D) {
-        infoMarker.snippet = placeID
+        infoMarker.snippet = nil
         infoMarker.position = location
         infoMarker.title = name
+        infoMarker.icon = UIImage(systemName: "fork.knife.circle.fill")
         infoMarker.opacity = 0
         infoMarker.infoWindowAnchor.y = 1
+        RestaurantInfoModel.name = infoMarker.title ?? ""
         infoMarker.map = mapView
         mapView.selectedMarker = infoMarker
+    }
+    
+    func mapView(_ mapView: GMSMapView, didTapInfoWindowOf marker: GMSMarker) {
+        let VC = RestaurantInfoVC()
+        VC.modalPresentationStyle = .popover
+        VC.modalTransitionStyle = .crossDissolve
+        present(VC, animated: true, completion: nil)
     }
     
     // MARK: - Search functions
@@ -164,11 +175,20 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
             infoMarker.snippet = place.editorialSummary
             infoMarker.position = place.coordinate
             infoMarker.title = place.name
+            infoMarker.icon = UIImage(systemName: "fork.knife.circle.fill")
             infoMarker.opacity = 0
             infoMarker.infoWindowAnchor.y = 1
             infoMarker.map = mapView
             mapView.selectedMarker = infoMarker
             
+            RestaurantInfoModel.name = place.name ?? "no information"
+            RestaurantInfoModel.address = place.formattedAddress ?? "no information"
+            RestaurantInfoModel.openingHours = place.openingHours?.description ?? "no information"
+            RestaurantInfoModel.website = place.website?.description ?? "no information"
+            RestaurantInfoModel.phoneNumber = place.phoneNumber ?? "no information"
+            RestaurantInfoModel.description = place.editorialSummary ?? ""
+            RestaurantInfoModel.priceLevel = String(place.priceLevel.rawValue)
+            RestaurantInfoModel.rating = String(place.rating)
             finished()
         }
         updateLocation {

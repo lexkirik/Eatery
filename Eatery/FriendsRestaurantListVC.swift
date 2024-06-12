@@ -18,6 +18,7 @@ class FriendsRestaurantListVC: UIViewController, UITableViewDataSource, UITableV
         table.translatesAutoresizingMaskIntoConstraints = true
         return table
     }()
+    
     private var models = [FriendRestaurantOption]()
     private var friendsArray = ["Fred", "Bob", "Anna", "Emily"]
     private var restaurantArray = ["Restaurant 1", "Restaurant 2", "Restaurant 3", "Restaurant 4"]
@@ -27,7 +28,7 @@ class FriendsRestaurantListVC: UIViewController, UITableViewDataSource, UITableV
     override func viewDidLoad() {
         super.viewDidLoad()
         configure()
-
+        
         view.addSubview(tableView)
         tableView.dataSource = self
         tableView.delegate = self
