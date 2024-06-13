@@ -17,4 +17,5 @@ class RestaurantInfoModel {
     static var openingHours = ""
     static var website = ""
     static var phoneNumber = ""
+    static var url = URL(string: "")
 }

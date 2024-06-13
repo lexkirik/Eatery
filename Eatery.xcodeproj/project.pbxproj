@@ -114,18 +114,9 @@
 			children = (
 				52888FBD2C08ED9E00A611E7 /* AppDelegate.swift */,
 				52888FBF2C08ED9E00A611E7 /* SceneDelegate.swift */,
-				52D435FC2C0A4B15007FD9E4 /* SignUpViewController.swift */,
-				52D435FE2C0A4DBC007FD9E4 /* SignUpElement.swift */,
-				52888FC12C08ED9E00A611E7 /* ViewController.swift */,
-				52A3DCFC2C18B43E003D9194 /* RestaurantInfoModel.swift */,
-				52A3DCFA2C189CBE003D9194 /* RestaurantInfoVC.swift */,
-				52A3DCFE2C18CC8F003D9194 /* RestaurantInfoCell.swift */,
-				52181CE22C16E361007B4F23 /* FriendsRestaurantListVC.swift */,
-				52A3DD022C19F4E7003D9194 /* RestaurantDetail.swift */,
-				52181CE42C16F00B007B4F23 /* FriendsTableViewCell.swift */,
-				52A3DD002C19F4BB003D9194 /* FriendRestaurantOption.swift */,
-				52A9D2DA2C133F56005BAA3C /* ButtonAnimation.swift */,
-				52A9D2DC2C135259005BAA3C /* GlobalConstants.swift */,
+				52A3DD042C1B641F003D9194 /* Views */,
+				52A3DD052C1B6453003D9194 /* Model */,
+				52A3DD062C1B648F003D9194 /* Helper */,
 				52888FC32C08ED9E00A611E7 /* Main.storyboard */,
 				52888FC62C08ED9F00A611E7 /* Assets.xcassets */,
 				52888FC82C08ED9F00A611E7 /* LaunchScreen.storyboard */,
@@ -133,6 +124,39 @@
 				527E59A32C0A41090088D2F0 /* GoogleService-Info.plist */,
 			);
 			path = Eatery;
+			sourceTree = "<group>";
+		};
+		52A3DD042C1B641F003D9194 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				52D435FC2C0A4B15007FD9E4 /* SignUpViewController.swift */,
+				52888FC12C08ED9E00A611E7 /* ViewController.swift */,
+				52A3DCFA2C189CBE003D9194 /* RestaurantInfoVC.swift */,
+				52181CE22C16E361007B4F23 /* FriendsRestaurantListVC.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		52A3DD052C1B6453003D9194 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				52D435FE2C0A4DBC007FD9E4 /* SignUpElement.swift */,
+				52A3DCFC2C18B43E003D9194 /* RestaurantInfoModel.swift */,
+				52A3DCFE2C18CC8F003D9194 /* RestaurantInfoCell.swift */,
+				52A3DD022C19F4E7003D9194 /* RestaurantDetail.swift */,
+				52181CE42C16F00B007B4F23 /* FriendsTableViewCell.swift */,
+				52A3DD002C19F4BB003D9194 /* FriendRestaurantOption.swift */,
+				52A9D2DC2C135259005BAA3C /* GlobalConstants.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		52A3DD062C1B648F003D9194 /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				52A9D2DA2C133F56005BAA3C /* ButtonAnimation.swift */,
+			);
+			path = Helper;
 			sourceTree = "<group>";
 		};
 		52D436022C0B5618007FD9E4 /* Frameworks */ = {

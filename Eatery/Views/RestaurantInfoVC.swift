@@ -112,6 +112,14 @@ class RestaurantInfoVC: UIViewController, UITableViewDelegate, UITableViewDataSo
         return cell
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if indexPath.row == 4 {
+            if let url = RestaurantInfoModel.url {
+                UIApplication.shared.open(url)
+            }
+        }
+    }
+    
     @objc private func addRestaurauntToList() {
         
     }

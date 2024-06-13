@@ -30,7 +30,7 @@ class RestaurantInfoCell: UITableViewCell {
     
     private let detailLabel: UILabel = {
         let label = UILabel()
-        label.numberOfLines = 3
+        label.numberOfLines = 6
         return label
     }()
     
