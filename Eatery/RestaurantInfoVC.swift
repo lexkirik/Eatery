@@ -44,6 +44,19 @@ class RestaurantInfoVC: UIViewController, UITableViewDelegate, UITableViewDataSo
     
     private var models = [RestaurantDetail]()
     
+    private let buttonGoingToRestaurant: UIButton = {
+        let button = UIButton(frame: .zero)
+        button.translatesAutoresizingMaskIntoConstraints = true
+        button.backgroundColor = .systemBlue
+        button.setTitle("I'm going to this restaurant", for: .normal)
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
+        button.setTitleColor(.white, for: .normal)
+        button.layer.cornerRadius = 16
+        button.clipsToBounds = true
+        button.addTarget(nil, action: #selector(addRestaurauntToList), for: .touchUpInside)
+        return button
+    }()
+    
     // MARK: - viewDidLoad
     
     override func viewDidLoad() {
@@ -55,9 +68,11 @@ class RestaurantInfoVC: UIViewController, UITableViewDelegate, UITableViewDataSo
         
         view.addSubview(name)
         view.addSubview(summary)
-        setConstraints()
+        view.addSubview(buttonGoingToRestaurant)
         name.text = RestaurantInfoModel.name
         summary.text = RestaurantInfoModel.description
+        
+        setConstraints()
         view.backgroundColor = .white
     }
     
@@ -97,6 +112,10 @@ class RestaurantInfoVC: UIViewController, UITableViewDelegate, UITableViewDataSo
         return cell
     }
     
+    @objc private func addRestaurauntToList() {
+        
+    }
+    
     // MARK: - Constraints
     
     private func setConstraints() {
@@ -119,6 +138,13 @@ class RestaurantInfoVC: UIViewController, UITableViewDelegate, UITableViewDataSo
             make.top.equalTo(name.snp.bottom).offset(10)
             make.leading.equalToSuperview().offset(50)
             make.trailing.equalToSuperview().offset(-50)
+        }
+        
+        buttonGoingToRestaurant.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.bottom.equalToSuperview().offset(-100)
+            make.width.equalTo(250)
+            make.height.equalTo(40)
         }
     }
 }

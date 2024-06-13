@@ -169,32 +169,34 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
     func resultsController(_ resultsController: GMSAutocompleteResultsViewController, didAutocompleteWith place: GMSPlace) {
         searchController?.isActive = false
         
-        func updateLocation(finished: () -> Void) {
-            locationManager(CLLocationManager(), didUpdateLocations: [CLLocation(latitude: place.coordinate.latitude, longitude: place.coordinate.longitude)])
-            
-            infoMarker.snippet = place.editorialSummary
-            infoMarker.position = place.coordinate
-            infoMarker.title = place.name
-            infoMarker.icon = UIImage(systemName: "fork.knife.circle.fill")
-            infoMarker.opacity = 0
-            infoMarker.infoWindowAnchor.y = 1
-            infoMarker.map = mapView
-            mapView.selectedMarker = infoMarker
-            
-            RestaurantInfoModel.name = place.name ?? "no information"
-            RestaurantInfoModel.address = place.formattedAddress ?? "no information"
-            RestaurantInfoModel.openingHours = place.openingHours?.description ?? "no information"
-            RestaurantInfoModel.website = place.website?.description ?? "no information"
-            RestaurantInfoModel.phoneNumber = place.phoneNumber ?? "no information"
-            RestaurantInfoModel.description = place.editorialSummary ?? ""
-            RestaurantInfoModel.priceLevel = String(place.priceLevel.rawValue)
-            RestaurantInfoModel.rating = String(place.rating)
-            finished()
-        }
-        updateLocation {
+        updateLocation(place: place) {
             mapView.translatesAutoresizingMaskIntoConstraints = true
         }
     }
+    
+    private func updateLocation(place: GMSPlace, finished: () -> Void) {
+        locationManager(CLLocationManager(), didUpdateLocations: [CLLocation(latitude: place.coordinate.latitude, longitude: place.coordinate.longitude)])
+        
+        infoMarker.snippet = place.editorialSummary
+        infoMarker.position = place.coordinate
+        infoMarker.title = place.name
+        infoMarker.icon = UIImage(systemName: "fork.knife.circle.fill")
+        infoMarker.opacity = 0
+        infoMarker.infoWindowAnchor.y = 1
+        infoMarker.map = mapView
+        mapView.selectedMarker = infoMarker
+        
+        RestaurantInfoModel.name = place.name ?? "no information"
+        RestaurantInfoModel.address = place.formattedAddress ?? "no information"
+        RestaurantInfoModel.openingHours = place.openingHours?.description ?? "no information"
+        RestaurantInfoModel.website = place.website?.description ?? "no information"
+        RestaurantInfoModel.phoneNumber = place.phoneNumber ?? "no information"
+        RestaurantInfoModel.description = place.editorialSummary ?? ""
+        RestaurantInfoModel.priceLevel = String(place.priceLevel.rawValue)
+        RestaurantInfoModel.rating = String(place.rating)
+        finished()
+    }
+    
     
     func resultsController(_ resultsController: GMSAutocompleteResultsViewController, didFailAutocompleteWithError error: any Error) {
         print("Error: \(error.localizedDescription)")
@@ -253,6 +255,4 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
     @objc func userMenuButtonClicked() {
         
     }
-
 }
-
