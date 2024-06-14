@@ -8,14 +8,14 @@
 import Foundation
 import GooglePlaces
 
-class RestaurantInfoModel {
+struct RestaurantInfoModel {
     static var name = ""
     static var description = ""
     static var rating = ""
-    static var priceLevel = ""
+    static var priceLevel = 0
     static var address = ""
-    static var openingHours = ""
     static var website = ""
     static var phoneNumber = ""
     static var url = URL(string: "")
+    static var openingHoursArray = [String]()
 }

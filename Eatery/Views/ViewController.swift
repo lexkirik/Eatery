@@ -188,13 +188,13 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
         
         RestaurantInfoModel.name = place.name ?? "no information"
         RestaurantInfoModel.address = place.formattedAddress ?? "no information"
-        RestaurantInfoModel.openingHours = place.openingHours?.periods?.description ?? "no information"
         RestaurantInfoModel.website = place.website?.description ?? "no information"
         RestaurantInfoModel.phoneNumber = place.phoneNumber ?? "no information"
         RestaurantInfoModel.description = place.editorialSummary ?? ""
-        RestaurantInfoModel.priceLevel = String(place.priceLevel.rawValue)
-        RestaurantInfoModel.rating = String(place.rating)
+        RestaurantInfoModel.priceLevel = place.priceLevel.rawValue
+        RestaurantInfoModel.rating = place.rating.description
         RestaurantInfoModel.url = place.website
+        RestaurantInfoModel.openingHoursArray = place.openingHours?.weekdayText ?? [""]
         finished()
     }
     

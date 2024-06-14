@@ -7,6 +7,11 @@
 
 import UIKit
 
+struct Section {
+    let title: String
+    let options: [RestaurantDetail]
+}
+
 struct RestaurantDetail {
     let icon: UIImage?
     let iconBackgroundColor = UIColor(.blue)
