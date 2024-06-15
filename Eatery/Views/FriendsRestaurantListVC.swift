@@ -40,7 +40,7 @@ class FriendsRestaurantListVC: UIViewController, UITableViewDataSource, UITableV
     
     private func configure() {
         for number in 0...(friendsArray.count - 1) {
-            models.append(FriendRestaurantOption(friendName: friendsArray[number], friendsRestaurant: restaurantArray[number]))
+            models.append(FriendRestaurantOption(name: friendsArray[number], restaurant: restaurantArray[number]))
         }
     }
     

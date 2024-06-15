@@ -8,6 +8,6 @@
 import Foundation
 
 struct FriendRestaurantOption {
-    let friendName: String
-    let friendsRestaurant: String
+    let name: String
+    let restaurant: String
 }

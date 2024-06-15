@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 
 class FriendsTableViewCell: UITableViewCell {
 
@@ -13,13 +14,13 @@ class FriendsTableViewCell: UITableViewCell {
     
     static let identifier = "FriendsTableViewCell"
     
-    private let friendName: UILabel = {
+    private let friendNameLabel: UILabel = {
         let name = UILabel()
         name.numberOfLines = 1
         return name
     }()
     
-    private let friendsRestaurant: UILabel = {
+    private let friendsRestaurantLabel: UILabel = {
         let restaurant = UILabel()
         restaurant.numberOfLines = 2
         return restaurant
@@ -29,29 +30,37 @@ class FriendsTableViewCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        contentView.addSubview(friendName)
-        contentView.addSubview(friendsRestaurant)
-        contentView.clipsToBounds = true
+        contentView.addSubview(friendNameLabel)
+        contentView.addSubview(friendsRestaurantLabel)
+        setConstraints()
     }
     
     required init?(coder: NSCoder) {
         fatalError()
     }
-
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        friendName.frame = CGRect(x: 25, y: 0, width: contentView.frame.size.width - 15, height: contentView.frame.size.height)
-        friendsRestaurant.frame = CGRect(x: contentView.frame.size.width / 2, y: 0, width: contentView.frame.size.width - 15, height: contentView.frame.size.height)
+    
+    private func setConstraints() {
+        friendNameLabel.snp.makeConstraints { make in
+            make.leading.equalToSuperview().offset(10)
+            make.height.equalTo(50)
+            make.width.equalTo(contentView.frame.width / 3)
+        }
+        
+        friendsRestaurantLabel.snp.makeConstraints { make in
+            make.top.equalTo(friendNameLabel.snp.top)
+            make.leading.equalTo(friendNameLabel.snp.trailing).offset(10)
+            make.height.equalTo(50)
+        }
     }
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        friendName.text = nil
-        friendsRestaurant.text = nil
+        friendNameLabel.text = nil
+        friendsRestaurantLabel.text = nil
     }
     
-    public func configure(with model: FriendRestaurantOption) {
-        friendName.text = model.friendName
-        friendsRestaurant.text = model.friendsRestaurant
+    func configure(with model: FriendRestaurantOption) {
+        friendNameLabel.text = model.name
+        friendsRestaurantLabel.text = model.restaurant
     }
 }

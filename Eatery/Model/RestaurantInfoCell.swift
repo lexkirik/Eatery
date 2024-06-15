@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 
 class RestaurantInfoCell: UITableViewCell {
     
@@ -17,7 +18,6 @@ class RestaurantInfoCell: UITableViewCell {
         let view = UIView()
         view.clipsToBounds = true
         view.layer.cornerRadius = 10
-        view.layer.masksToBounds = true
         return view
     }()
     
@@ -42,7 +42,7 @@ class RestaurantInfoCell: UITableViewCell {
         contentView.addSubview(iconContainer)
         iconContainer.addSubview(iconImageView)
         contentView.addSubview(detailLabel)
-        contentView.clipsToBounds = true
+        setConstraints()
     }
     
     required init?(coder: NSCoder) {
@@ -50,24 +50,26 @@ class RestaurantInfoCell: UITableViewCell {
     }
     
     // MARK: - Functions
-
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        let size: CGFloat = contentView.frame.size.height - 12
-        iconContainer.frame = CGRect(x: 10, y: 6, width: size, height: size)
-        let imageSize: CGFloat = size/1.5
-        iconImageView.frame = CGRect(
-            x: (size-imageSize)/2,
-            y: (size-imageSize)/2,
-            width: imageSize,
-            height: imageSize
-        )
-        detailLabel.frame = CGRect(
-            x: 25 + iconContainer.frame.size.width,
-            y: 0,
-            width: contentView.frame.size.width - 15 - iconContainer.frame.size.width,
-            height: contentView.frame.size.height
-        )
+    
+    private func setConstraints() {
+        iconContainer.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset((contentView.frame.height - 30) / 2)
+            make.leading.equalToSuperview().offset(10)
+            make.height.equalTo(30)
+            make.width.equalTo(30)
+        }
+        
+        iconImageView.snp.makeConstraints { make in
+            make.center.equalTo(iconContainer.snp.center)
+            make.height.equalTo(20)
+            make.width.equalTo(20)
+        }
+        
+        detailLabel.snp.makeConstraints { make in
+            make.leading.equalTo(iconContainer.snp.trailing).offset(10)
+            make.trailing.equalToSuperview().offset(-10)
+            make.height.equalTo(50)
+        }
     }
     
     override func prepareForReuse() {
@@ -77,7 +79,7 @@ class RestaurantInfoCell: UITableViewCell {
         detailLabel.text = nil
     }
     
-    public func configureRestaurantInfoCell(with model: RestaurantDetail) {
+    func configureRestaurantInfoCell(with model: RestaurantDetail) {
         iconContainer.backgroundColor = model.iconBackgroundColor
         iconImageView.image = model.icon
         detailLabel.text = model.detail
