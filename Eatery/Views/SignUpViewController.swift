@@ -73,8 +73,8 @@ class SignUpViewController: UIViewController {
     
     @objc func signUpClicked(_ sender: UIButton) {
         sender.showAnimation {
-            if self.emailTextField.text != "" && self.passwordTextField.text != "" {
-                
+            if self.emailTextField.text != "" && self.passwordTextField.text != "" && self.usernameTextField.text != nil {
+                CurrentUser.user = self.usernameTextField.text ?? "user"
                 Auth.auth().createUser(withEmail: self.emailTextField.text!, password: self.passwordTextField.text!) { authdata, error in
                     
                     if error != nil {
@@ -96,8 +96,8 @@ class SignUpViewController: UIViewController {
     @objc func signInClicked(_ sender: UIButton) {
         sender.showAnimation {
             
-            if self.emailTextField.text != "" && self.passwordTextField.text != nil {
-                
+            if self.emailTextField.text != "" && self.passwordTextField.text != nil && self.usernameTextField.text != nil {
+                CurrentUser.user = self.usernameTextField.text ?? "user"
                 Auth.auth().signIn(withEmail: self.emailTextField.text!, password: self.passwordTextField.text!) { authdata, error in
                     
                     if error != nil {
@@ -122,4 +122,8 @@ class SignUpViewController: UIViewController {
         alert.addAction(okButton)
         present(alert, animated: true, completion: nil)
     }
+}
+
+struct CurrentUser {
+    static var user = ""
 }

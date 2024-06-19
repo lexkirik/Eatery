@@ -195,6 +195,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
         RestaurantInfoModel.rating = place.rating.description
         RestaurantInfoModel.url = place.website
         RestaurantInfoModel.openingHoursArray = place.openingHours?.weekdayText ?? [""]
+        RestaurantInfoModel.coordinate = place.coordinate
         finished()
     }
     

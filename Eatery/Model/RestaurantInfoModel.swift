@@ -18,4 +18,5 @@ struct RestaurantInfoModel {
     static var phoneNumber = ""
     static var url = URL(string: "")
     static var openingHoursArray = [String]()
+    static var coordinate = CLLocationCoordinate2D()
 }

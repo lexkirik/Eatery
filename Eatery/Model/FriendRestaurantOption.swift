@@ -11,3 +11,8 @@ struct FriendRestaurantOption {
     let name: String
     let restaurant: String
 }
+
+struct FriendsInRestaurantNow {
+    static var friends = [String]()
+    static var restauraunts = [String]()
+}

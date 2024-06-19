@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import FirebaseFirestore
 
 class FriendsRestaurantListVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
@@ -20,14 +21,12 @@ class FriendsRestaurantListVC: UIViewController, UITableViewDataSource, UITableV
     }()
     
     private var models = [FriendRestaurantOption]()
-    private var friendsArray = ["Fred", "Bob", "Anna", "Emily"]
-    private var restaurantArray = ["Restaurant 1", "Restaurant 2", "Restaurant 3", "Restaurant 4"]
     
     // MARK: - viewDidLoad
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        configure()
+        getDataFromFirestore()
         
         view.addSubview(tableView)
         tableView.dataSource = self
@@ -37,12 +36,6 @@ class FriendsRestaurantListVC: UIViewController, UITableViewDataSource, UITableV
     }
     
     // MARK: - TableView functions
-    
-    private func configure() {
-        for number in 0...(friendsArray.count - 1) {
-            models.append(FriendRestaurantOption(name: friendsArray[number], restaurant: restaurantArray[number]))
-        }
-    }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return models.count
@@ -64,4 +57,39 @@ class FriendsRestaurantListVC: UIViewController, UITableViewDataSource, UITableV
             make.width.equalToSuperview()
         }
     }
+    
+    private func getDataFromFirestore() {
+        let firestoreDatabase = Firestore.firestore()
+        
+        firestoreDatabase.collection("Restaurants").addSnapshotListener { snapshot, error in
+            
+            if error != nil {
+                print(error?.localizedDescription ?? "error")
+            } else {
+                if snapshot?.isEmpty != true && snapshot != nil {
+                    
+                    for document in snapshot!.documents {
+                        
+                        if let name = document.get("friendName") as? String, let rest = document.get("restaurant") as? String {
+                            FriendsInRestaurantNow.friends.append(name)
+                            FriendsInRestaurantNow.restauraunts.append(rest)
+                        }
+                    }
+                    var number = 0
+                    repeat {
+                        self.models.append(
+                            FriendRestaurantOption(
+                                name: FriendsInRestaurantNow.friends[number],
+                                restaurant: FriendsInRestaurantNow.restauraunts[number]
+                            )
+                        )
+                        number += 1
+                    } while number < FriendsInRestaurantNow.friends.count
+                    
+                    self.tableView.reloadData()
+                }
+            }
+        }
+    }
 }
+

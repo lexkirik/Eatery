@@ -8,6 +8,8 @@
 import UIKit
 import GoogleMaps
 import SnapKit
+import FirebaseFirestore
+import FirebaseAuth
 
 class RestaurantInfoVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
@@ -169,8 +171,25 @@ class RestaurantInfoVC: UIViewController, UITableViewDelegate, UITableViewDataSo
         }
     }
     
-    @objc private func addRestaurauntToList() {
-        
+    @objc private func addRestaurauntToList(_ sender: UIButton) {
+        sender.showAnimation {
+            let firestoreDatabase = Firestore.firestore()
+            var firestoreReference: DocumentReference? = nil
+            let firestorePost = ["friendEmail" : Auth.auth().currentUser?.email ?? "", "friendName" : CurrentUser.user, "restaurant" : RestaurantInfoModel.name, "date" : FieldValue.serverTimestamp(), "latitude" : RestaurantInfoModel.coordinate.latitude, "longitude" : RestaurantInfoModel.coordinate.longitude]
+            
+            firestoreReference = firestoreDatabase.collection("Restaurants").addDocument(data: firestorePost as [String : Any], completion: { (error) in
+                if error != nil {
+                    self.makeAlert(titleInput: "Error", messageInput: error?.localizedDescription ?? "error")
+                }
+            })
+        }
+    }
+    
+    private func makeAlert(titleInput: String, messageInput: String) {
+        let alert = UIAlertController(title: titleInput, message: messageInput, preferredStyle: UIAlertController.Style.alert)
+        let okButton = UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil)
+        alert.addAction(okButton)
+        present(alert, animated: true, completion: nil)
     }
     
     private func priceLevelToDollarSymbol() {
