@@ -58,6 +58,8 @@ class FriendsRestaurantListVC: UIViewController, UITableViewDataSource, UITableV
         }
     }
     
+    // MARK: - Firestore functions
+    
     private func getDataFromFirestore() {
         let firestoreDatabase = Firestore.firestore()
         
@@ -71,8 +73,10 @@ class FriendsRestaurantListVC: UIViewController, UITableViewDataSource, UITableV
                     for document in snapshot!.documents {
                         
                         if let name = document.get("friendName") as? String, let rest = document.get("restaurant") as? String {
-                            FriendsInRestaurantNow.friends.append(name)
-                            FriendsInRestaurantNow.restauraunts.append(rest)
+                            if name != CurrentUser.username {
+                                FriendsInRestaurantNow.friends.append(name)
+                                FriendsInRestaurantNow.restauraunts.append(rest)
+                            }
                         }
                     }
                     var number = 0

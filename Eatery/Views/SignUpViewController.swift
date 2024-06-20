@@ -9,6 +9,7 @@ import UIKit
 import SnapKit
 import Firebase
 import FirebaseAuth
+import FirebaseFirestore
 
 class SignUpViewController: UIViewController {
     
@@ -74,8 +75,17 @@ class SignUpViewController: UIViewController {
     @objc func signUpClicked(_ sender: UIButton) {
         sender.showAnimation {
             if self.emailTextField.text != "" && self.passwordTextField.text != "" && self.usernameTextField.text != nil {
-                CurrentUser.user = self.usernameTextField.text ?? "user"
+                
                 Auth.auth().createUser(withEmail: self.emailTextField.text!, password: self.passwordTextField.text!) { authdata, error in
+                    
+                    let firestoreDatabase = Firestore.firestore()
+                    var firestoreReference: DocumentReference? = nil
+                    let firestorePost = ["username" : self.usernameTextField.text, "userEmmail" : self.emailTextField.text]
+                    firestoreReference = firestoreDatabase.collection("Users").addDocument(data: firestorePost as [String : Any], completion: { (error) in
+                        if error != nil {
+                            self.makeAlert(titleInput: "Error", messageInput: error?.localizedDescription ?? "error")
+                        }
+                    })
                     
                     if error != nil {
                         self.makeAlert(titleInput: "Error", messageInput: error?.localizedDescription ?? "Error!")
@@ -87,6 +97,8 @@ class SignUpViewController: UIViewController {
                     }
                 }
                 
+                CurrentUser.username = self.usernameTextField.text ?? "username"
+                
             } else {
                 self.makeAlert(titleInput: "Error", messageInput: "Missing email/password")
             }
@@ -96,8 +108,8 @@ class SignUpViewController: UIViewController {
     @objc func signInClicked(_ sender: UIButton) {
         sender.showAnimation {
             
-            if self.emailTextField.text != "" && self.passwordTextField.text != nil && self.usernameTextField.text != nil {
-                CurrentUser.user = self.usernameTextField.text ?? "user"
+            if self.emailTextField.text != "" && self.passwordTextField.text != nil {
+                
                 Auth.auth().signIn(withEmail: self.emailTextField.text!, password: self.passwordTextField.text!) { authdata, error in
                     
                     if error != nil {
@@ -122,8 +134,4 @@ class SignUpViewController: UIViewController {
         alert.addAction(okButton)
         present(alert, animated: true, completion: nil)
     }
-}
-
-struct CurrentUser {
-    static var user = ""
 }

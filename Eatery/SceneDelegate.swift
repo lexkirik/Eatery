@@ -7,6 +7,7 @@
 
 import UIKit
 import FirebaseAuth
+import FirebaseFirestore
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -18,6 +19,27 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         let currentUser = Auth.auth().currentUser
+        
+        let firestoreDatabase = Firestore.firestore()
+        
+        firestoreDatabase.collection("Users").addSnapshotListener { snapshot, error in
+            
+            if error != nil {
+                print(error?.localizedDescription ?? "error")
+            } else {
+                if snapshot?.isEmpty != true && snapshot != nil {
+                    
+                    for document in snapshot!.documents {
+                        
+                        if let email = document.get("userEmmail") as? String, let name = document.get("username") as? String {
+                            if email == currentUser?.email {
+                                CurrentUser.username = name
+                            }
+                        }
+                    }
+                }
+            }
+        }
         
         let mapviewContoller = ViewController()
         let signUpVC = SignUpViewController()

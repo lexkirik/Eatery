@@ -175,7 +175,7 @@ class RestaurantInfoVC: UIViewController, UITableViewDelegate, UITableViewDataSo
         sender.showAnimation {
             let firestoreDatabase = Firestore.firestore()
             var firestoreReference: DocumentReference? = nil
-            let firestorePost = ["friendEmail" : Auth.auth().currentUser?.email ?? "", "friendName" : CurrentUser.user, "restaurant" : RestaurantInfoModel.name, "date" : FieldValue.serverTimestamp(), "latitude" : RestaurantInfoModel.coordinate.latitude, "longitude" : RestaurantInfoModel.coordinate.longitude]
+            let firestorePost = ["friendEmail" : Auth.auth().currentUser?.email ?? "", "friendName" : CurrentUser.username, "restaurant" : RestaurantInfoModel.name, "date" : FieldValue.serverTimestamp(), "latitude" : RestaurantInfoModel.coordinate.latitude, "longitude" : RestaurantInfoModel.coordinate.longitude]
             
             firestoreReference = firestoreDatabase.collection("Restaurants").addDocument(data: firestorePost as [String : Any], completion: { (error) in
                 if error != nil {

@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		52181CE32C16E361007B4F23 /* FriendsRestaurantListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52181CE22C16E361007B4F23 /* FriendsRestaurantListVC.swift */; };
 		52181CE52C16F00B007B4F23 /* FriendsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52181CE42C16F00B007B4F23 /* FriendsTableViewCell.swift */; };
+		52340F652C24885E00E912D4 /* CurrentUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52340F642C24885E00E912D4 /* CurrentUser.swift */; };
 		527E59A42C0A41090088D2F0 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 527E59A32C0A41090088D2F0 /* GoogleService-Info.plist */; };
 		52888FBE2C08ED9E00A611E7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52888FBD2C08ED9E00A611E7 /* AppDelegate.swift */; };
 		52888FC02C08ED9E00A611E7 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52888FBF2C08ED9E00A611E7 /* SceneDelegate.swift */; };
@@ -53,6 +54,7 @@
 /* Begin PBXFileReference section */
 		52181CE22C16E361007B4F23 /* FriendsRestaurantListVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsRestaurantListVC.swift; sourceTree = "<group>"; };
 		52181CE42C16F00B007B4F23 /* FriendsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsTableViewCell.swift; sourceTree = "<group>"; };
+		52340F642C24885E00E912D4 /* CurrentUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentUser.swift; sourceTree = "<group>"; };
 		527E59A32C0A41090088D2F0 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		52888FBA2C08ED9E00A611E7 /* Eatery.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Eatery.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		52888FBD2C08ED9E00A611E7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -147,6 +149,7 @@
 				52181CE42C16F00B007B4F23 /* FriendsTableViewCell.swift */,
 				52A3DD002C19F4BB003D9194 /* FriendRestaurantOption.swift */,
 				52A9D2DC2C135259005BAA3C /* GlobalConstants.swift */,
+				52340F642C24885E00E912D4 /* CurrentUser.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -265,6 +268,7 @@
 				52181CE32C16E361007B4F23 /* FriendsRestaurantListVC.swift in Sources */,
 				52888FC22C08ED9E00A611E7 /* ViewController.swift in Sources */,
 				52A9D2DB2C133F56005BAA3C /* ButtonAnimation.swift in Sources */,
+				52340F652C24885E00E912D4 /* CurrentUser.swift in Sources */,
 				52888FBE2C08ED9E00A611E7 /* AppDelegate.swift in Sources */,
 				52A9D2DD2C135259005BAA3C /* GlobalConstants.swift in Sources */,
 				52D435FD2C0A4B15007FD9E4 /* SignUpViewController.swift in Sources */,
