@@ -86,7 +86,7 @@ class RestaurantInfoVC: UIViewController, UITableViewDelegate, UITableViewDataSo
     }()
     
     private var models = [Section]()
-    
+    private var imageForOpeningHours = UIImage(systemName: "clock.fill")
     // MARK: - viewDidLoad
     
     override func viewDidLoad() {
@@ -114,16 +114,11 @@ class RestaurantInfoVC: UIViewController, UITableViewDelegate, UITableViewDataSo
     // MARK: - TableView functions
     
     private func configure() {
-        
-        models.append(Section(title: "Opening hours", options: [
-            RestaurantDetail(icon: UIImage(systemName: "clock.fill"), detail: RestaurantInfoModel.openingHoursArray[0]),
-            RestaurantDetail(icon: UIImage(systemName: "clock.fill"), detail: RestaurantInfoModel.openingHoursArray[1]),
-            RestaurantDetail(icon: UIImage(systemName: "clock.fill"), detail: RestaurantInfoModel.openingHoursArray[2]),
-            RestaurantDetail(icon: UIImage(systemName: "clock.fill"), detail: RestaurantInfoModel.openingHoursArray[3]),
-            RestaurantDetail(icon: UIImage(systemName: "clock.fill"), detail: RestaurantInfoModel.openingHoursArray[4]),
-            RestaurantDetail(icon: UIImage(systemName: "clock.fill"), detail: RestaurantInfoModel.openingHoursArray[5]),
-            RestaurantDetail(icon: UIImage(systemName: "clock.fill"), detail: RestaurantInfoModel.openingHoursArray[6])
-        ]))
+        var openingHoursArray = [RestaurantDetail]()
+        for num in 0...RestaurantInfoModel.openingHoursArray.count - 1 {
+            openingHoursArray.append( RestaurantDetail(icon: imageForOpeningHours, detail: RestaurantInfoModel.openingHoursArray[num]))
+        }
+        models.append(Section(title: "Opening hours", options: openingHoursArray))
         
         models.append(Section(title: "Contacts", options: [
             RestaurantDetail(

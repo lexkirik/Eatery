@@ -15,6 +15,6 @@ struct FriendRestaurantOption {
 struct FriendsInRestaurantNow {
     static var friends = [String]()
     static var restauraunts = [String]()
-    static var longitudes = [Float]()
-    static var latitudes = [Float]()
+    static var longitudes = [Double]()
+    static var latitudes = [Double]()
 }

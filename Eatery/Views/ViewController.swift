@@ -20,7 +20,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
     private var placesClient = GMSPlacesClient()
     private var preciseLocationZoomLevel: Float = 17.0
     private var approximateLocationZoomLevel: Float = 10.0
-    private let infoMarker = GMSMarker()
+    private let marker = GMSMarker()
     private var resultsViewController: GMSAutocompleteResultsViewController?
     private var searchController: UISearchController?
     private var resultView: UITextView?
@@ -83,10 +83,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
         searchController?.hidesNavigationBarDuringPresentation = false
         definesPresentationContext = true
         
-        let center = CLLocationCoordinate2DMake(currentLocation?.coordinate.latitude ?? GlobalConstants.defaultLocation.coordinate.latitude, currentLocation?.coordinate.longitude ?? GlobalConstants.defaultLocation.coordinate.longitude)
-        let radius = 5000.0
-        searchFilter.locationBias = GMSPlaceCircularLocationOption(center, radius)
-        
         resultsViewController?.autocompleteFilter = searchFilter
         
         mapView.gestureRecognizers?.removeAll()
@@ -109,7 +105,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
             longitude: GlobalConstants.defaultLocation.coordinate.longitude,
             zoom: zoomLevel
         )
-        options.frame = view.bounds
         
         mapView = GMSMapView(options: options)
         mapView.settings.myLocationButton = true
@@ -117,8 +112,13 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
         mapView.settings.scrollGestures = true
         mapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         mapView.isMyLocationEnabled = true
-        mapView.frame = view.bounds
         view.addSubview(mapView)
+        mapView.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.top.equalToSuperview()
+            make.height.equalToSuperview()
+            make.width.equalToSuperview()
+        }
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
@@ -146,15 +146,35 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
     // MARK: - Marker functions
     
     func mapView(_ mapView: GMSMapView, didTapPOIWithPlaceID placeID: String, name: String, location: CLLocationCoordinate2D) {
-        infoMarker.snippet = nil
-        infoMarker.position = location
-        infoMarker.title = name
-        infoMarker.icon = UIImage(systemName: "fork.knife.circle.fill")
-        infoMarker.opacity = 0
-        infoMarker.infoWindowAnchor.y = 1
-        RestaurantInfoModel.name = infoMarker.title ?? ""
-        infoMarker.map = mapView
-        mapView.selectedMarker = infoMarker
+        
+        let placeRequest = GMSFetchPlaceRequest(placeID: placeID, placeProperties: GMSPlacePropertyArray(), sessionToken: nil)
+        placesClient.fetchPlace(with: placeRequest) { (place: GMSPlace?, error: Error?) in
+            if let error = error {
+                print(error.localizedDescription)
+                return
+            }
+            if let place = place {
+                print("Place name: \(String(describing: place.name))")
+                self.marker.title = place.name
+                self.marker.snippet = place.editorialSummary
+                self.marker.position = location
+                self.marker.icon = UIImage(systemName: "fork.knife.circle.fill")
+                self.marker.infoWindowAnchor.y = 1
+                self.marker.map = mapView
+                mapView.selectedMarker = self.marker
+                
+                RestaurantInfoModel.name = place.name ?? "no information"
+                RestaurantInfoModel.address = place.formattedAddress ?? "no information"
+                RestaurantInfoModel.website = place.website?.description ?? "no information"
+                RestaurantInfoModel.phoneNumber = place.phoneNumber ?? "no information"
+                RestaurantInfoModel.description = place.editorialSummary ?? ""
+                RestaurantInfoModel.priceLevel = place.priceLevel.rawValue
+                RestaurantInfoModel.rating = place.rating.description
+                RestaurantInfoModel.url = place.website
+                RestaurantInfoModel.openingHoursArray = place.openingHours?.weekdayText ?? [""]
+                RestaurantInfoModel.coordinate = place.coordinate
+            }
+        }
     }
     
     func mapView(_ mapView: GMSMapView, didTapInfoWindowOf marker: GMSMarker) {
@@ -177,14 +197,13 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
     private func updateLocation(place: GMSPlace, finished: () -> Void) {
         locationManager(CLLocationManager(), didUpdateLocations: [CLLocation(latitude: place.coordinate.latitude, longitude: place.coordinate.longitude)])
         
-        infoMarker.snippet = place.editorialSummary
-        infoMarker.position = place.coordinate
-        infoMarker.title = place.name
-        infoMarker.icon = UIImage(systemName: "fork.knife.circle.fill")
-        infoMarker.opacity = 0
-        infoMarker.infoWindowAnchor.y = 1
-        infoMarker.map = mapView
-        mapView.selectedMarker = infoMarker
+        marker.snippet = place.editorialSummary
+        marker.position = place.coordinate
+        marker.title = place.name
+        marker.icon = UIImage(systemName: "fork.knife.circle.fill")
+        marker.infoWindowAnchor.y = 1
+        marker.map = mapView
+        mapView.selectedMarker = marker
         
         RestaurantInfoModel.name = place.name ?? "no information"
         RestaurantInfoModel.address = place.formattedAddress ?? "no information"
@@ -227,7 +246,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
         
         let myFriendsInfo = UIAction(title: "My friends") { _ in
             let destinationVC = FriendsRestaurantListVC()
-            destinationVC.modalPresentationStyle = .fullScreen
+            destinationVC.modalPresentationStyle = .pageSheet
             destinationVC.modalTransitionStyle = .crossDissolve
             self.present(destinationVC, animated: true)
         }
