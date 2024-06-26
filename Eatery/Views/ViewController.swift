@@ -113,6 +113,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
         mapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         mapView.isMyLocationEnabled = true
         view.addSubview(mapView)
+        
         mapView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.top.equalToSuperview()
@@ -154,12 +155,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
                 return
             }
             if let place = place {
-                print("Place name: \(String(describing: place.name))")
                 self.marker.title = place.name
                 self.marker.snippet = place.editorialSummary
                 self.marker.position = location
-                self.marker.icon = UIImage(systemName: "fork.knife.circle.fill")
-                self.marker.infoWindowAnchor.y = 1
                 self.marker.map = mapView
                 mapView.selectedMarker = self.marker
                 
@@ -200,8 +198,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
         marker.snippet = place.editorialSummary
         marker.position = place.coordinate
         marker.title = place.name
-        marker.icon = UIImage(systemName: "fork.knife.circle.fill")
-        marker.infoWindowAnchor.y = 1
         marker.map = mapView
         mapView.selectedMarker = marker
         

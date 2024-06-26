@@ -49,10 +49,6 @@ class FriendsRestaurantListVC: UIViewController, UITableViewDataSource, UITableV
     override func viewDidLoad() {
         super.viewDidLoad()
         getDataFromFirestore()
-        locationManager.delegate = self
-        mapView.delegate = self
-        placesClient = GMSPlacesClient.shared()
-        
         
         view.addSubview(tableView)
         tableView.dataSource = self
@@ -60,7 +56,11 @@ class FriendsRestaurantListVC: UIViewController, UITableViewDataSource, UITableV
         setTableViewConstraints()
         view.backgroundColor = .white
         
+        locationManager.delegate = self
+        placesClient = GMSPlacesClient.shared()
         setMapView()
+        mapView.delegate = self
+        
         mapView.isHidden = true
     }
     
@@ -91,16 +91,11 @@ class FriendsRestaurantListVC: UIViewController, UITableViewDataSource, UITableV
         
         longitude = FriendsInRestaurantNow.longitudes[indexPath.row]
         latitude = FriendsInRestaurantNow.latitudes[indexPath.row]
-        
-        
-        let mapCenter = CLLocationCoordinate2DMake(latitude, longitude)
-        let marker = GMSMarker(position: mapCenter)
-        
-        marker.icon = UIImage(systemName: "fork.knife.circle.fill")
-        marker.title = FriendsInRestaurantNow.friends[indexPath.row]
-        marker.snippet = FriendsInRestaurantNow.restauraunts[indexPath.row]
-        marker.map = mapView
-        print(longitude, latitude)
+        mapView.camera = GMSCameraPosition(
+            latitude: latitude,
+            longitude: longitude,
+            zoom: locationManager.accuracyAuthorization == .fullAccuracy ? preciseLocationZoomLevel : approximateLocationZoomLevel
+        )
     }
     
     // MARK: - Firestore functions
@@ -143,7 +138,18 @@ class FriendsRestaurantListVC: UIViewController, UITableViewDataSource, UITableV
                         ))
                     }
                     self.tableView.reloadData()
-                    self.mapView.reloadInputViews()
+                    
+                    var bounds = GMSCoordinateBounds.init()
+                    for num in 0...FriendsInRestaurantNow.friends.count - 1 {
+                        let mapCenter = CLLocationCoordinate2DMake(FriendsInRestaurantNow.latitudes[num], FriendsInRestaurantNow.longitudes[num])
+                        let marker = GMSMarker(position: mapCenter)
+                        marker.title = FriendsInRestaurantNow.friends[num]
+                        marker.snippet = FriendsInRestaurantNow.restauraunts[num]
+                        marker.map = self.mapView
+                        bounds = bounds.includingCoordinate(marker.position)
+                    }
+                    var update = GMSCameraUpdate.fit(bounds)
+                    self.mapView.moveCamera(update)
                 }
             }
         }
@@ -155,8 +161,8 @@ class FriendsRestaurantListVC: UIViewController, UITableViewDataSource, UITableV
         let zoomLevel = locationManager.accuracyAuthorization == .fullAccuracy ? preciseLocationZoomLevel : approximateLocationZoomLevel
         let options = GMSMapViewOptions()
         options.camera = GMSCameraPosition.camera(
-            withLatitude: latitude,
-            longitude: longitude,
+            withLatitude: GlobalConstants.defaultLocation.coordinate.latitude,
+            longitude: GlobalConstants.defaultLocation.coordinate.longitude,
             zoom: zoomLevel
         )
         
@@ -167,20 +173,21 @@ class FriendsRestaurantListVC: UIViewController, UITableViewDataSource, UITableV
         mapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         mapView.isMyLocationEnabled = true
         view.addSubview(mapView)
+        
         mapView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.top.equalTo(tableView.snp.bottom)
-            make.height.equalToSuperview()
+            make.height.equalToSuperview().dividedBy(1.5)
             make.width.equalToSuperview()
         }
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        let location = CLLocation(latitude: latitude, longitude: longitude)
+        let location: CLLocation = locations.last ?? GlobalConstants.defaultLocation
         let zoomLevel = locationManager.accuracyAuthorization == .fullAccuracy ? preciseLocationZoomLevel : approximateLocationZoomLevel
         let camera = GMSCameraPosition.camera(
-            withLatitude: latitude,
-            longitude: longitude,
+            withLatitude: location.coordinate.latitude,
+            longitude: location.coordinate.longitude,
             zoom: zoomLevel
         )
         
