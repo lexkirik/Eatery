@@ -8,13 +8,8 @@
 import Foundation
 
 struct FriendRestaurantOption {
-    let name: String
+    let friendName: String
     let restaurant: String
-}
-
-struct FriendsInRestaurantNow {
-    static var friends = [String]()
-    static var restauraunts = [String]()
-    static var longitudes = [Double]()
-    static var latitudes = [Double]()
+    let longitude: Double
+    let latitude: Double
 }

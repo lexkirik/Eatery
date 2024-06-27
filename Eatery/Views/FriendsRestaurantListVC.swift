@@ -89,8 +89,8 @@ class FriendsRestaurantListVC: UIViewController, UITableViewDataSource, UITableV
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        longitude = FriendsInRestaurantNow.longitudes[indexPath.row]
-        latitude = FriendsInRestaurantNow.latitudes[indexPath.row]
+        longitude = models[indexPath.row].longitude
+        latitude = models[indexPath.row].latitude
         mapView.camera = GMSCameraPosition(
             latitude: latitude,
             longitude: longitude,
@@ -101,10 +101,6 @@ class FriendsRestaurantListVC: UIViewController, UITableViewDataSource, UITableV
     // MARK: - Firestore functions
     
     private func getDataFromFirestore() {
-        FriendsInRestaurantNow.friends.removeAll()
-        FriendsInRestaurantNow.restauraunts.removeAll()
-        FriendsInRestaurantNow.longitudes.removeAll()
-        FriendsInRestaurantNow.latitudes.removeAll()
         
         let firestoreDatabase = Firestore.firestore()
         
@@ -119,32 +115,26 @@ class FriendsRestaurantListVC: UIViewController, UITableViewDataSource, UITableV
                         
                         if let name = document.get("friendName") as? String, let rest = document.get("restaurant") as? String {
                             if name != CurrentUser.username {
-                                FriendsInRestaurantNow.friends.append(name)
-                                FriendsInRestaurantNow.restauraunts.append(rest)
-                                
+                                if let longitude = document.get("longitude") as? Double, let latitude = document.get("latitude") as? Double {
+                                    self.models.append(FriendRestaurantOption(
+                                        friendName: name,
+                                        restaurant: rest,
+                                        longitude: longitude,
+                                        latitude: latitude)
+                                    )
+                                }
                             }
-                        }
-                        
-                        if let longitude = document.get("longitude") as? Double, let latitude = document.get("latitude") as? Double {
-                            FriendsInRestaurantNow.longitudes.append(longitude)
-                            FriendsInRestaurantNow.latitudes.append(latitude)
                         }
                     }
 
-                    for number in 0...FriendsInRestaurantNow.friends.count - 1 {
-                        self.models.append(FriendRestaurantOption(
-                            name: FriendsInRestaurantNow.friends[number],
-                            restaurant: FriendsInRestaurantNow.restauraunts[number]
-                        ))
-                    }
                     self.tableView.reloadData()
                     
                     var bounds = GMSCoordinateBounds.init()
-                    for num in 0...FriendsInRestaurantNow.friends.count - 1 {
-                        let mapCenter = CLLocationCoordinate2DMake(FriendsInRestaurantNow.latitudes[num], FriendsInRestaurantNow.longitudes[num])
+                    for num in 0...self.models.count - 1 {
+                        let mapCenter = CLLocationCoordinate2DMake(self.models[num].latitude, self.models[num].longitude)
                         let marker = GMSMarker(position: mapCenter)
-                        marker.title = FriendsInRestaurantNow.friends[num]
-                        marker.snippet = FriendsInRestaurantNow.restauraunts[num]
+                        marker.title = self.models[num].friendName
+                        marker.snippet = self.models[num].restaurant
                         marker.map = self.mapView
                         bounds = bounds.includingCoordinate(marker.position)
                     }

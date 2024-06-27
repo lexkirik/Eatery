@@ -60,7 +60,7 @@ class FriendsTableViewCell: UITableViewCell {
     }
     
     func configure(with model: FriendRestaurantOption) {
-        friendNameLabel.text = model.name
+        friendNameLabel.text = model.friendName
         friendsRestaurantLabel.text = model.restaurant
     }
 }
