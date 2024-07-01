@@ -9,11 +9,13 @@ import UIKit
 import SnapKit
 import Firebase
 import FirebaseAuth
+import FirebaseFirestore
 
 class SignUpViewController: UIViewController {
     
     // MARK: - Constants
     
+    private let labelApp = SignUpElement.setTextLabel(name: "Eatery")
     private let emailTextField = SignUpElement.setTextField(name: "Email")
     private let usernameTextField = SignUpElement.setTextField(name: "Username")
     private let passwordTextField = SignUpElement.setTextField(name: "Password")
@@ -24,13 +26,15 @@ class SignUpViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         view.backgroundColor = .white
         setTextFieldsAndButtons()
     }
     
-    // MARK: - Function to set stackViews and constraints
+    // MARK: - UIView elements and constraints
     
     private func setTextFieldsAndButtons() {
+        
         let stackFields = UIStackView(arrangedSubviews: [emailTextField, usernameTextField, passwordTextField])
         stackFields.axis = .vertical
         stackFields.spacing = 20
@@ -45,6 +49,12 @@ class SignUpViewController: UIViewController {
         
         view.addSubview(stackFields)
         view.addSubview(stackButtons)
+        view.addSubview(labelApp)
+        
+        labelApp.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.bottom.equalTo(stackFields.snp.top).offset(-50)
+        }
         
         stackFields.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
@@ -64,9 +74,18 @@ class SignUpViewController: UIViewController {
     
     @objc func signUpClicked(_ sender: UIButton) {
         sender.showAnimation {
-            if self.emailTextField.text != "" && self.passwordTextField.text != "" {
+            if self.emailTextField.text != "" && self.passwordTextField.text != "" && self.usernameTextField.text != nil {
                 
                 Auth.auth().createUser(withEmail: self.emailTextField.text!, password: self.passwordTextField.text!) { authdata, error in
+                    
+                    let firestoreDatabase = Firestore.firestore()
+                    var firestoreReference: DocumentReference? = nil
+                    let firestorePost = ["username" : self.usernameTextField.text, "userEmmail" : self.emailTextField.text]
+                    firestoreReference = firestoreDatabase.collection("Users").addDocument(data: firestorePost as [String : Any], completion: { (error) in
+                        if error != nil {
+                            self.makeAlert(titleInput: "Error", messageInput: error?.localizedDescription ?? "error")
+                        }
+                    })
                     
                     if error != nil {
                         self.makeAlert(titleInput: "Error", messageInput: error?.localizedDescription ?? "Error!")
@@ -77,6 +96,8 @@ class SignUpViewController: UIViewController {
                         self.present(destinationVC, animated: true, completion: nil)
                     }
                 }
+                
+                CurrentUser.username = self.usernameTextField.text ?? "username"
                 
             } else {
                 self.makeAlert(titleInput: "Error", messageInput: "Missing email/password")
@@ -112,30 +133,5 @@ class SignUpViewController: UIViewController {
         let okButton = UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil)
         alert.addAction(okButton)
         present(alert, animated: true, completion: nil)
-    }
-    
-}
-
-// MARK: - Extension of UIView for animation
-
-public extension UIView {
-    func showAnimation(_ completionBlock: @escaping () -> Void) {
-        isUserInteractionEnabled = false
-        UIView.animate(withDuration: 0.1,
-                       delay: 0,
-                       options: .curveLinear,
-                       animations: { [weak self] in
-            self?.transform = CGAffineTransform.init(scaleX: 0.95, y: 0.95)
-        }) {  (done) in
-            UIView.animate(withDuration: 0.1,
-                           delay: 0,
-                           options: .curveLinear,
-                           animations: { [weak self] in
-                self?.transform = CGAffineTransform.init(scaleX: 1, y: 1)
-            }) { [weak self] (_) in
-                self?.isUserInteractionEnabled = true
-                completionBlock()
-            }
-        }
     }
 }
