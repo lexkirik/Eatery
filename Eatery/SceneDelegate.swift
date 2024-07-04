@@ -17,33 +17,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
-        let currentUser = Auth.auth().currentUser
+        let currentAuthUser = Auth.auth().currentUser
         
-        let firestoreDatabase = Firestore.firestore()
-        
-        firestoreDatabase.collection("Users").addSnapshotListener { snapshot, error in
-            
-            if error != nil {
-                print(error?.localizedDescription ?? "error")
-            } else {
-                if snapshot?.isEmpty != true && snapshot != nil {
-                    
-                    for document in snapshot!.documents {
-                        
-                        if let email = document.get("userEmmail") as? String, let name = document.get("username") as? String {
-                            if email == currentUser?.email {
-                                CurrentUser.username = name
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        let userAuthorizer = UserAuthorizer()
+        userAuthorizer.getCurrentUserName(currentAuthUser: currentAuthUser)
         
         let mapviewContoller = ViewController()
         let signUpVC = SignUpViewController()
         
-        if currentUser != nil {
+        if currentAuthUser != nil {
             window?.rootViewController = mapviewContoller
         } else {
             window?.rootViewController = signUpVC

@@ -7,7 +7,6 @@
 
 import UIKit
 import SnapKit
-import FirebaseFirestore
 import CoreLocation
 import GoogleMaps
 import GooglePlaces
@@ -24,12 +23,8 @@ class FriendsRestaurantListVC: UIViewController, UITableViewDataSource, UITableV
     }()
     
     private var models = [FriendRestaurantOption]()
-    
     private var mapView = GMSMapView()
     private var placesClient = GMSPlacesClient()
-    private var preciseLocationZoomLevel: Float = 17.0
-    private var approximateLocationZoomLevel: Float = 10.0
-    private let marker = GMSMarker()
     private var currentLocation: CLLocation?
     
     private var locationManager: CLLocationManager = {
@@ -67,7 +62,11 @@ class FriendsRestaurantListVC: UIViewController, UITableViewDataSource, UITableV
     // MARK: - TableView functions
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return models.count
+        if models.count > 0 {
+            return models.count
+        } else {
+            return 1
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -88,67 +87,40 @@ class FriendsRestaurantListVC: UIViewController, UITableViewDataSource, UITableV
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
         longitude = models[indexPath.row].longitude
         latitude = models[indexPath.row].latitude
         mapView.camera = GMSCameraPosition(
             latitude: latitude,
             longitude: longitude,
-            zoom: locationManager.accuracyAuthorization == .fullAccuracy ? preciseLocationZoomLevel : approximateLocationZoomLevel
+            zoom: locationManager.accuracyAuthorization == .fullAccuracy ? GlobalConstants.preciseLocationZoomLevel : GlobalConstants.approximateLocationZoomLevel
         )
     }
     
     // MARK: - Firestore functions
     
     private func getDataFromFirestore() {
-        
-        let firestoreDatabase = Firestore.firestore()
-        
-        firestoreDatabase.collection("Restaurants").addSnapshotListener { snapshot, error in
-            
-            if error != nil {
-                print(error?.localizedDescription ?? "error")
-            } else {
-                if snapshot?.isEmpty != true && snapshot != nil {
-                    
-                    for document in snapshot!.documents {
-                        
-                        if let name = document.get("friendName") as? String, let rest = document.get("restaurant") as? String {
-                            if name != CurrentUser.username {
-                                if let longitude = document.get("longitude") as? Double, let latitude = document.get("latitude") as? Double {
-                                    self.models.append(FriendRestaurantOption(
-                                        friendName: name,
-                                        restaurant: rest,
-                                        longitude: longitude,
-                                        latitude: latitude)
-                                    )
-                                }
-                            }
-                        }
-                    }
-
-                    self.tableView.reloadData()
-                    
-                    var bounds = GMSCoordinateBounds.init()
-                    for num in 0...self.models.count - 1 {
-                        let mapCenter = CLLocationCoordinate2DMake(self.models[num].latitude, self.models[num].longitude)
-                        let marker = GMSMarker(position: mapCenter)
-                        marker.title = self.models[num].friendName
-                        marker.snippet = self.models[num].restaurant
-                        marker.map = self.mapView
-                        bounds = bounds.includingCoordinate(marker.position)
-                    }
-                    var update = GMSCameraUpdate.fit(bounds)
-                    self.mapView.moveCamera(update)
-                }
+        let restaurantInfoPostMaker = RestaurantInfoPostMaker()
+        restaurantInfoPostMaker.getDataFromRestaurantInfoPostForLast12Hours { result in
+            if result == .success {
+                self.models.append(FriendRestaurantOption(
+                    friendName: RestaurantInfoPostMaker.friendName,
+                    restaurant: RestaurantInfoPostMaker.restaurant,
+                    longitude: RestaurantInfoPostMaker.longitude,
+                    latitude: RestaurantInfoPostMaker.latitude)
+                )
             }
+            if result == .error {
+                print("Error getting data from a Firestore post")
+            }
+            self.tableView.reloadData()
+            self.createMarkersWithinBounds()
         }
     }
     
     // MARK: - MapView functions
     
     private func setMapView() {
-        let zoomLevel = locationManager.accuracyAuthorization == .fullAccuracy ? preciseLocationZoomLevel : approximateLocationZoomLevel
+        let zoomLevel = locationManager.accuracyAuthorization == .fullAccuracy ? GlobalConstants.preciseLocationZoomLevel : GlobalConstants.approximateLocationZoomLevel
         let options = GMSMapViewOptions()
         options.camera = GMSCameraPosition.camera(
             withLatitude: GlobalConstants.defaultLocation.coordinate.latitude,
@@ -174,7 +146,7 @@ class FriendsRestaurantListVC: UIViewController, UITableViewDataSource, UITableV
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         let location: CLLocation = locations.last ?? GlobalConstants.defaultLocation
-        let zoomLevel = locationManager.accuracyAuthorization == .fullAccuracy ? preciseLocationZoomLevel : approximateLocationZoomLevel
+        let zoomLevel = locationManager.accuracyAuthorization == .fullAccuracy ? GlobalConstants.preciseLocationZoomLevel : GlobalConstants.approximateLocationZoomLevel
         let camera = GMSCameraPosition.camera(
             withLatitude: location.coordinate.latitude,
             longitude: location.coordinate.longitude,
@@ -192,5 +164,19 @@ class FriendsRestaurantListVC: UIViewController, UITableViewDataSource, UITableV
     func locationManager(_ manager: CLLocationManager, didFailWithError error: any Error) {
         locationManager.stopUpdatingLocation()
         print("Error: \(error)")
+    }
+    
+    func createMarkersWithinBounds() {
+        var bounds = GMSCoordinateBounds.init()
+        for num in 0...models.count - 1 {
+            let mapCenter = CLLocationCoordinate2DMake(models[num].latitude, models[num].longitude)
+            let marker = GMSMarker(position: mapCenter)
+            marker.title = models[num].friendName
+            marker.snippet = models[num].restaurant
+            marker.map = mapView
+            bounds = bounds.includingCoordinate(marker.position)
+        }
+        let update = GMSCameraUpdate.fit(bounds)
+        mapView.moveCamera(update)
     }
 }

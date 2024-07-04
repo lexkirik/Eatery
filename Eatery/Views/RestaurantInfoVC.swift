@@ -8,8 +8,6 @@
 import UIKit
 import GoogleMaps
 import SnapKit
-import FirebaseFirestore
-import FirebaseAuth
 
 class RestaurantInfoVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
@@ -48,7 +46,7 @@ class RestaurantInfoVC: UIViewController, UITableViewDelegate, UITableViewDataSo
         let button = UIButton(frame: .zero)
         button.translatesAutoresizingMaskIntoConstraints = true
         button.backgroundColor = .systemBlue
-        button.setTitle("I'm going to this restaurant", for: .normal)
+        button.setTitle(RestaurantInfoConstants.buttonGoingToRestaurantTitle, for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
         button.setTitleColor(.white, for: .normal)
         button.layer.cornerRadius = 16
@@ -59,7 +57,7 @@ class RestaurantInfoVC: UIViewController, UITableViewDelegate, UITableViewDataSo
     
     private let ratingImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(systemName: "star.fill")
+        imageView.image = UIImage(systemName: RestaurantInfoConstants.ratingImageName)
         return imageView
     }()
     
@@ -86,7 +84,8 @@ class RestaurantInfoVC: UIViewController, UITableViewDelegate, UITableViewDataSo
     }()
     
     private var models = [Section]()
-    private var imageForOpeningHours = UIImage(systemName: "clock.fill")
+    private var imageForOpeningHours = UIImage(systemName: RestaurantInfoConstants.openingHoursImageName)
+    
     // MARK: - viewDidLoad
     
     override func viewDidLoad() {
@@ -116,21 +115,21 @@ class RestaurantInfoVC: UIViewController, UITableViewDelegate, UITableViewDataSo
     private func configure() {
         var openingHoursArray = [RestaurantDetail]()
         for num in 0...RestaurantInfoModel.openingHoursArray.count - 1 {
-            openingHoursArray.append( RestaurantDetail(icon: imageForOpeningHours, detail: RestaurantInfoModel.openingHoursArray[num]))
+            openingHoursArray.append(RestaurantDetail(icon: imageForOpeningHours, detail: RestaurantInfoModel.openingHoursArray[num]))
         }
-        models.append(Section(title: "Opening hours", options: openingHoursArray))
+        models.append(Section(title: RestaurantInfoConstants.openingHoursTitle, options: openingHoursArray))
         
-        models.append(Section(title: "Contacts", options: [
+        models.append(Section(title: RestaurantInfoConstants.contactsTitle, options: [
             RestaurantDetail(
-                icon: UIImage(systemName: "mappin.and.ellipse"),
+                icon: UIImage(systemName: RestaurantInfoConstants.addressImageName),
                 detail: RestaurantInfoModel.address
             ),
             RestaurantDetail(
-                icon: UIImage(systemName: "globe.europe.africa.fill"),
+                icon: UIImage(systemName: RestaurantInfoConstants.websiteImageName),
                 detail: RestaurantInfoModel.website
             ),
             RestaurantDetail(
-                icon: UIImage(systemName: "phone.fill"),
+                icon: UIImage(systemName: RestaurantInfoConstants.phoneNumberImageName),
                 detail: RestaurantInfoModel.phoneNumber
             )
         ]))
@@ -168,23 +167,9 @@ class RestaurantInfoVC: UIViewController, UITableViewDelegate, UITableViewDataSo
     
     @objc private func addRestaurauntToList(_ sender: UIButton) {
         sender.showAnimation {
-            let firestoreDatabase = Firestore.firestore()
-            var firestoreReference: DocumentReference? = nil
-            let firestorePost = ["friendEmail" : Auth.auth().currentUser?.email ?? "", "friendName" : CurrentUser.username, "restaurant" : RestaurantInfoModel.name, "date" : FieldValue.serverTimestamp(), "latitude" : RestaurantInfoModel.coordinate.latitude, "longitude" : RestaurantInfoModel.coordinate.longitude]
-            
-            firestoreReference = firestoreDatabase.collection("Restaurants").addDocument(data: firestorePost as [String : Any], completion: { (error) in
-                if error != nil {
-                    self.makeAlert(titleInput: "Error", messageInput: error?.localizedDescription ?? "error")
-                }
-            })
+            let restaurantInfoPostMaker = RestaurantInfoPostMaker()
+            restaurantInfoPostMaker.addRestaurauntInfoPost()
         }
-    }
-    
-    private func makeAlert(titleInput: String, messageInput: String) {
-        let alert = UIAlertController(title: titleInput, message: messageInput, preferredStyle: UIAlertController.Style.alert)
-        let okButton = UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil)
-        alert.addAction(okButton)
-        present(alert, animated: true, completion: nil)
     }
     
     private func priceLevelToDollarSymbol() {
@@ -192,13 +177,13 @@ class RestaurantInfoVC: UIViewController, UITableViewDelegate, UITableViewDataSo
         
         switch level {
         case 1:
-            priceLevelLabel.text = "$"
+            priceLevelLabel.text = RestaurantInfoConstants.priceLevelLow
         case 2:
-            priceLevelLabel.text = "$$"
+            priceLevelLabel.text = RestaurantInfoConstants.priceLevelMedium
         case 3:
-            priceLevelLabel.text = "$$$"
+            priceLevelLabel.text = RestaurantInfoConstants.priceLevelMediumHigh
         case 4:
-            priceLevelLabel.text = "$$$$"
+            priceLevelLabel.text = RestaurantInfoConstants.priceLevelHigh
         default:
             priceLevelLabel.text = ""
         }
@@ -252,4 +237,19 @@ class RestaurantInfoVC: UIViewController, UITableViewDelegate, UITableViewDataSo
             make.height.equalTo(30)
         }
     }
+}
+
+private enum RestaurantInfoConstants {
+    static let buttonGoingToRestaurantTitle = "I'm going to this place"
+    static let ratingImageName = "star.fill"
+    static let openingHoursImageName = "clock.fill"
+    static let openingHoursTitle = "Opening hours"
+    static let contactsTitle = "Contacts"
+    static let addressImageName = "mappin.and.ellipse"
+    static let websiteImageName = "globe.europe.africa.fill"
+    static let phoneNumberImageName = "phone.fill"
+    static let priceLevelLow = "$"
+    static let priceLevelMedium = "$$"
+    static let priceLevelMediumHigh = "$$$"
+    static let priceLevelHigh = "$$$$"
 }

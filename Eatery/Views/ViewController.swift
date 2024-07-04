@@ -20,7 +20,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
     private var placesClient = GMSPlacesClient()
     private var preciseLocationZoomLevel: Float = 17.0
     private var approximateLocationZoomLevel: Float = 10.0
-    private let marker = GMSMarker()
+    private var marker = GMSMarker()
     private var resultsViewController: GMSAutocompleteResultsViewController?
     private var searchController: UISearchController?
     private var resultView: UITextView?
@@ -37,7 +37,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
     
     private let userMenuButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setTitle("U", for: .normal)
+        button.setTitle(UserMenuConstants.buttonTitle, for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 34)
         button.translatesAutoresizingMaskIntoConstraints = true
@@ -98,7 +98,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
     // MARK: - MapView functions
     
     private func setMapView() {
-        let zoomLevel = locationManager.accuracyAuthorization == .fullAccuracy ? preciseLocationZoomLevel : approximateLocationZoomLevel
+        let zoomLevel = locationManager.accuracyAuthorization == .fullAccuracy ? GlobalConstants.preciseLocationZoomLevel : GlobalConstants.approximateLocationZoomLevel
         let options = GMSMapViewOptions()
         options.camera = GMSCameraPosition.camera(
             withLatitude: GlobalConstants.defaultLocation.coordinate.latitude,
@@ -124,7 +124,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         let location: CLLocation = locations.last ?? GlobalConstants.defaultLocation
-        let zoomLevel = locationManager.accuracyAuthorization == .fullAccuracy ? preciseLocationZoomLevel : approximateLocationZoomLevel
+        let zoomLevel = locationManager.accuracyAuthorization == .fullAccuracy ? GlobalConstants.preciseLocationZoomLevel : GlobalConstants.approximateLocationZoomLevel
         let camera = GMSCameraPosition.camera(
             withLatitude: location.coordinate.latitude,
             longitude: location.coordinate.longitude,
@@ -147,32 +147,26 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
     // MARK: - Marker functions
     
     func mapView(_ mapView: GMSMapView, didTapPOIWithPlaceID placeID: String, name: String, location: CLLocationCoordinate2D) {
-        
         let placeRequest = GMSFetchPlaceRequest(placeID: placeID, placeProperties: GMSPlacePropertyArray(), sessionToken: nil)
         placesClient.fetchPlace(with: placeRequest) { (place: GMSPlace?, error: Error?) in
             if let error = error {
                 print(error.localizedDescription)
                 return
             }
+            
             if let place = place {
-                self.marker.title = place.name
-                self.marker.snippet = place.editorialSummary
-                self.marker.position = location
-                self.marker.map = mapView
-                mapView.selectedMarker = self.marker
-                
-                RestaurantInfoModel.name = place.name ?? "no information"
-                RestaurantInfoModel.address = place.formattedAddress ?? "no information"
-                RestaurantInfoModel.website = place.website?.description ?? "no information"
-                RestaurantInfoModel.phoneNumber = place.phoneNumber ?? "no information"
-                RestaurantInfoModel.description = place.editorialSummary ?? ""
-                RestaurantInfoModel.priceLevel = place.priceLevel.rawValue
-                RestaurantInfoModel.rating = place.rating.description
-                RestaurantInfoModel.url = place.website
-                RestaurantInfoModel.openingHoursArray = place.openingHours?.weekdayText ?? [""]
-                RestaurantInfoModel.coordinate = place.coordinate
+                self.addMarker(place: place)
+                _ = RestaurantInfoModel(place: place)
             }
         }
+    }
+    
+    private func addMarker(place: GMSPlace) {
+        marker.snippet = place.editorialSummary
+        marker.position = place.coordinate
+        marker.title = place.name
+        marker.map = mapView
+        mapView.selectedMarker = marker
     }
     
     func mapView(_ mapView: GMSMapView, didTapInfoWindowOf marker: GMSMarker) {
@@ -186,31 +180,18 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
     
     func resultsController(_ resultsController: GMSAutocompleteResultsViewController, didAutocompleteWith place: GMSPlace) {
         searchController?.isActive = false
-        
         updateLocation(place: place) {
             mapView.translatesAutoresizingMaskIntoConstraints = true
         }
     }
     
     private func updateLocation(place: GMSPlace, finished: () -> Void) {
-        locationManager(CLLocationManager(), didUpdateLocations: [CLLocation(latitude: place.coordinate.latitude, longitude: place.coordinate.longitude)])
+        locationManager(CLLocationManager(), didUpdateLocations: [
+            CLLocation(latitude: place.coordinate.latitude, longitude: place.coordinate.longitude)
+        ])
         
-        marker.snippet = place.editorialSummary
-        marker.position = place.coordinate
-        marker.title = place.name
-        marker.map = mapView
-        mapView.selectedMarker = marker
-        
-        RestaurantInfoModel.name = place.name ?? "no information"
-        RestaurantInfoModel.address = place.formattedAddress ?? "no information"
-        RestaurantInfoModel.website = place.website?.description ?? "no information"
-        RestaurantInfoModel.phoneNumber = place.phoneNumber ?? "no information"
-        RestaurantInfoModel.description = place.editorialSummary ?? ""
-        RestaurantInfoModel.priceLevel = place.priceLevel.rawValue
-        RestaurantInfoModel.rating = place.rating.description
-        RestaurantInfoModel.url = place.website
-        RestaurantInfoModel.openingHoursArray = place.openingHours?.weekdayText ?? [""]
-        RestaurantInfoModel.coordinate = place.coordinate
+        addMarker(place: place)
+        _ = RestaurantInfoModel(place: place)
         finished()
     }
     
@@ -240,18 +221,14 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
     
     private func setUserMenu() {
         
-        let myFriendsInfo = UIAction(title: "My friends") { _ in
+        let myFriendsInfo = UIAction(title: UserMenuConstants.myFriendsInfoTitle) { _ in
             let destinationVC = FriendsRestaurantListVC()
             destinationVC.modalPresentationStyle = .pageSheet
             destinationVC.modalTransitionStyle = .crossDissolve
             self.present(destinationVC, animated: true)
         }
         
-        let settings = UIAction(title: "Settings") { _ in
-            
-        }
-        
-        let logOut = UIAction(title: "Log out") { _ in
+        let logOut = UIAction(title: UserMenuConstants.logOutTitle) { _ in
             do {
                 try Auth.auth().signOut()
                 let destinationVC = SignUpViewController()
@@ -263,13 +240,20 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
             }
         }
         
-        let userMenu = UIMenu(title: "User", children: [myFriendsInfo, settings, logOut])
+        let userMenu = UIMenu(title: UserMenuConstants.title, children: [myFriendsInfo, logOut])
         userMenuButton.menu = userMenu
         userMenuButton.showsMenuAsPrimaryAction = true
         userMenuButton.addTarget(nil, action: #selector(userMenuButtonClicked), for: .menuActionTriggered)
     }
     
     @objc func userMenuButtonClicked() {
-        
+        print("User menu tapped")
     }
+}
+
+private enum UserMenuConstants {
+    static let buttonTitle = "U"
+    static let title = "User"
+    static let myFriendsInfoTitle = "My friends"
+    static let logOutTitle = "Log out"
 }

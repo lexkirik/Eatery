@@ -15,12 +15,13 @@ class SignUpViewController: UIViewController {
     
     // MARK: - Constants
     
-    private let labelApp = SignUpElement.setTextLabel(name: "Eatery")
-    private let emailTextField = SignUpElement.setTextField(name: "Email")
-    private let usernameTextField = SignUpElement.setTextField(name: "Username")
-    private let passwordTextField = SignUpElement.setTextField(name: "Password")
-    private let signUpButton = SignUpElement.setButton(name: "Sign Up", function: #selector(signUpClicked))
-    private let signInButton = SignUpElement.setButton(name: "Sign In", function: #selector(signInClicked))
+    private let labelApp = SignUpElement.setTextLabel(name: SignUpConstants.appName)
+    private let emailTextField = SignUpElement.setTextField(name: SignUpConstants.email)
+    private let usernameTextField = SignUpElement.setTextField(name: SignUpConstants.username)
+    private let passwordTextField = SignUpElement.setTextField(name: SignUpConstants.password)
+    private let signUpButton = SignUpElement.setButton(name: SignUpConstants.signUpButtonName, function: #selector(signUpClicked))
+    private let signInButton = SignUpElement.setButton(name: SignUpConstants.signInButtonName, function: #selector(signInClicked))
+    private let userAuthorizer = UserAuthorizer()
     
     // MARK: - viewDidLoad
     
@@ -34,7 +35,6 @@ class SignUpViewController: UIViewController {
     // MARK: - UIView elements and constraints
     
     private func setTextFieldsAndButtons() {
-        
         let stackFields = UIStackView(arrangedSubviews: [emailTextField, usernameTextField, passwordTextField])
         stackFields.axis = .vertical
         stackFields.spacing = 20
@@ -74,64 +74,44 @@ class SignUpViewController: UIViewController {
     
     @objc func signUpClicked(_ sender: UIButton) {
         sender.showAnimation {
-            if self.emailTextField.text != "" && self.passwordTextField.text != "" && self.usernameTextField.text != nil {
-                
-                Auth.auth().createUser(withEmail: self.emailTextField.text!, password: self.passwordTextField.text!) { authdata, error in
-                    
-                    let firestoreDatabase = Firestore.firestore()
-                    var firestoreReference: DocumentReference? = nil
-                    let firestorePost = ["username" : self.usernameTextField.text, "userEmmail" : self.emailTextField.text]
-                    firestoreReference = firestoreDatabase.collection("Users").addDocument(data: firestorePost as [String : Any], completion: { (error) in
-                        if error != nil {
-                            self.makeAlert(titleInput: "Error", messageInput: error?.localizedDescription ?? "error")
-                        }
-                    })
-                    
-                    if error != nil {
-                        self.makeAlert(titleInput: "Error", messageInput: error?.localizedDescription ?? "Error!")
-                    } else {
-                        let destinationVC = ViewController()
-                        destinationVC.modalPresentationStyle = .fullScreen
-                        destinationVC.modalTransitionStyle = .crossDissolve
-                        self.present(destinationVC, animated: true, completion: nil)
-                    }
+            self.userAuthorizer.signUpUser(
+                email: self.emailTextField.text!,
+                name: self.usernameTextField.text!,
+                password: self.passwordTextField.text!
+            ) { result in
+                if result == .success {
+                    self.presentMainViewController()
                 }
-                
-                CurrentUser.username = self.usernameTextField.text ?? "username"
-                
-            } else {
-                self.makeAlert(titleInput: "Error", messageInput: "Missing email/password")
             }
         }
     }
     
     @objc func signInClicked(_ sender: UIButton) {
         sender.showAnimation {
-            
-            if self.emailTextField.text != "" && self.passwordTextField.text != nil {
-                
-                Auth.auth().signIn(withEmail: self.emailTextField.text!, password: self.passwordTextField.text!) { authdata, error in
-                    
-                    if error != nil {
-                        self.makeAlert(titleInput: "Error", messageInput: error?.localizedDescription ?? "Error!")
-                    } else {
-                        let destinationVC = ViewController()
-                        destinationVC.modalPresentationStyle = .fullScreen
-                        destinationVC.modalTransitionStyle = .crossDissolve
-                        self.present(destinationVC, animated: true, completion: nil)
-                    }
+            self.userAuthorizer.signInUser(
+                email: self.emailTextField.text!,
+                password: self.passwordTextField.text!
+            ) { result in
+                if result == .success {
+                    self.presentMainViewController()
                 }
-                
-            } else {
-                self.makeAlert(titleInput: "Error", messageInput: "Missing email/password")
             }
         }
     }
     
-    private func makeAlert(titleInput: String, messageInput: String) {
-        let alert = UIAlertController(title: titleInput, message: messageInput, preferredStyle: UIAlertController.Style.alert)
-        let okButton = UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil)
-        alert.addAction(okButton)
-        present(alert, animated: true, completion: nil)
+    private func presentMainViewController() {
+        let destinationVC = ViewController()
+        destinationVC.modalPresentationStyle = .fullScreen
+        destinationVC.modalTransitionStyle = .crossDissolve
+        self.present(destinationVC, animated: true, completion: nil)
     }
+}
+
+private enum SignUpConstants {
+    static let appName = "Eatery"
+    static let email = "Email"
+    static let username = "Username"
+    static let password = "Password"
+    static let signUpButtonName = "Sign Up"
+    static let signInButtonName = "Sign In"
 }
