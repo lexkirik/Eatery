@@ -21,7 +21,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let userAuthorizer = UserAuthorizer()
         userAuthorizer.getCurrentUserName(currentAuthUser: currentAuthUser)
-        
+        print("scene current user: \(CurrentUser.username)")
         let mapviewContoller = ViewController()
         let signUpVC = SignUpViewController()
         

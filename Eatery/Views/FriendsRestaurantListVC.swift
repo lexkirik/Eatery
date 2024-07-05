@@ -10,6 +10,7 @@ import SnapKit
 import CoreLocation
 import GoogleMaps
 import GooglePlaces
+import FirebaseAuth
 
 class FriendsRestaurantListVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GMSMapViewDelegate, CLLocationManagerDelegate {
 
@@ -38,6 +39,7 @@ class FriendsRestaurantListVC: UIViewController, UITableViewDataSource, UITableV
     
     private var longitude = GlobalConstants.defaultLocation.coordinate.longitude
     private var latitude = GlobalConstants.defaultLocation.coordinate.latitude
+    private let defaultModels = [FriendRestaurantOption(friendName: "", restaurant: "No visited places in 12 hours", longitude: 0.0, latitude: 0.0)]
     
     // MARK: - viewDidLoad
     
@@ -70,12 +72,21 @@ class FriendsRestaurantListVC: UIViewController, UITableViewDataSource, UITableV
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let model = models[indexPath.row]
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: FriendsTableViewCell.identifier, for: indexPath) as? FriendsTableViewCell else {
-            return UITableViewCell()
+        if models.count == 0 {
+            let model = defaultModels[indexPath.row]
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: FriendsTableViewCell.identifier, for: indexPath) as? FriendsTableViewCell else {
+                return UITableViewCell()
+            }
+            cell.configure(with: model)
+            return cell
+        } else {
+            let model = models[indexPath.row]
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: FriendsTableViewCell.identifier, for: indexPath) as? FriendsTableViewCell else {
+                return UITableViewCell()
+            }
+            cell.configure(with: model)
+            return cell
         }
-        cell.configure(with: model)
-        return cell
     }
     
     private func setTableViewConstraints() {
@@ -99,6 +110,9 @@ class FriendsRestaurantListVC: UIViewController, UITableViewDataSource, UITableV
     // MARK: - Firestore functions
     
     private func getDataFromFirestore() {
+        let userAuthorizer = UserAuthorizer()
+        userAuthorizer.getCurrentUserName(currentAuthUser: Auth.auth().currentUser)
+        
         let restaurantInfoPostMaker = RestaurantInfoPostMaker()
         restaurantInfoPostMaker.getDataFromRestaurantInfoPostForLast12Hours { result in
             if result == .success {
@@ -167,16 +181,36 @@ class FriendsRestaurantListVC: UIViewController, UITableViewDataSource, UITableV
     }
     
     func createMarkersWithinBounds() {
-        var bounds = GMSCoordinateBounds.init()
-        for num in 0...models.count - 1 {
-            let mapCenter = CLLocationCoordinate2DMake(models[num].latitude, models[num].longitude)
+        if models.count == 0 {
+            let mapCenter = CLLocationCoordinate2DMake(GlobalConstants.defaultLocation.coordinate.latitude, GlobalConstants.defaultLocation.coordinate.longitude)
             let marker = GMSMarker(position: mapCenter)
-            marker.title = models[num].friendName
-            marker.snippet = models[num].restaurant
             marker.map = mapView
-            bounds = bounds.includingCoordinate(marker.position)
+            mapView.selectedMarker = marker
         }
-        let update = GMSCameraUpdate.fit(bounds)
-        mapView.moveCamera(update)
+        if models.count == 1 {
+            var bounds = GMSCoordinateBounds.init()
+            let mapCenter = CLLocationCoordinate2DMake(models[0].latitude, models[0].longitude)
+            let marker = GMSMarker(position: mapCenter)
+            marker.title = models[0].friendName
+            marker.snippet = models[0].restaurant
+            marker.map = mapView
+            mapView.selectedMarker = marker
+            bounds = bounds.includingCoordinate(marker.position)
+            let update = GMSCameraUpdate.fit(bounds)
+            mapView.moveCamera(update)
+        }
+        if models.count > 1 {
+            var bounds = GMSCoordinateBounds.init()
+            for num in 0...models.count - 1 {
+                let mapCenter = CLLocationCoordinate2DMake(models[num].latitude, models[num].longitude)
+                let marker = GMSMarker(position: mapCenter)
+                marker.title = models[num].friendName
+                marker.snippet = models[num].restaurant
+                marker.map = mapView
+                bounds = bounds.includingCoordinate(marker.position)
+            }
+            let update = GMSCameraUpdate.fit(bounds)
+            mapView.moveCamera(update)
+        }
     }
 }
