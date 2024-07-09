@@ -7,7 +7,18 @@
 
 import UIKit
 
-class SignUpElement {
+struct SignUpElement {
+    
+    static func setTextLabel(name: String) -> UILabel {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = true
+        label.text = name
+        label.font = UIFont.systemFont(ofSize: 34, weight: .bold)
+        label.textAlignment = .center
+        label.textColor = .black
+        return label
+    }
+    
     static func setTextField(name: String) -> UITextField {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = true
