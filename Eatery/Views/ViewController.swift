@@ -93,8 +93,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
         setUserMenu()
         setUserMenuButtonConstraints()
         mapView.isHidden = true
-        
-        print("VC current user: \(CurrentUser.username)")
     }
 
     // MARK: - MapView functions

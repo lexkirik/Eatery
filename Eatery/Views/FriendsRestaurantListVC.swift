@@ -67,7 +67,7 @@ class FriendsRestaurantListVC: UIViewController, UITableViewDataSource, UITableV
         if models.count > 0 {
             return models.count
         } else {
-            return 1
+            return defaultModels.count
         }
     }
     
