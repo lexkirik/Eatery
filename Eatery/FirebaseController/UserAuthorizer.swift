@@ -33,7 +33,7 @@ class UserAuthorizer: UserAuthorizerProtocol {
                     completion(.success)
                 }
             }
-            CurrentUser.username = name
+            CurrentUser.shared.username = name
         } else {
             completion(.error(.missingSignUpData))
         }
@@ -62,7 +62,7 @@ class UserAuthorizer: UserAuthorizerProtocol {
                     for document in snapshot!.documents {
                         if let email = document.get(UserInfoPost.userEmail) as? String, let name = document.get(UserInfoPost.username) as? String {
                             if email == currentAuthUser?.email {
-                                CurrentUser.username = name
+                                CurrentUser.shared.username = name
                             }
                         }
                     }

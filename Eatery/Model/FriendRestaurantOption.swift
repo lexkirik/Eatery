@@ -7,9 +7,18 @@
 
 import Foundation
 
-struct FriendRestaurantOption {
-    let friendName: String
-    let restaurant: String
-    let longitude: Double
-    let latitude: Double
+class FriendRestaurantOption {
+    var friendName = ""
+    var restaurant = ""
+    var longitude = 0.0
+    var latitude = 0.0
+    
+    static var shared = FriendRestaurantOption(friendName: CurrentUser.shared.username)
+    
+    init(friendName: String = "", restaurant: String = "", longitude: Double = 0.0, latitude: Double = 0.0) {
+        self.friendName = friendName
+        self.restaurant = restaurant
+        self.longitude = longitude
+        self.latitude = latitude
+    }
 }

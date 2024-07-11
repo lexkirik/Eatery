@@ -15,4 +15,14 @@ protocol RestaurantInfoPostMakerProtocol {
 enum DataFromRestaurantInfoPost: Error, Equatable {
     case success
     case error
+    
+    var restarauntInfo: Any {
+        switch self {
+        case .success:
+            return FriendRestaurantOption()
+        case .error:
+            print("error")
+        }
+        return self
+    }
 }

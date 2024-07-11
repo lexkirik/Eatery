@@ -11,16 +11,25 @@ import Firebase
 import FirebaseAuth
 import FirebaseFirestore
 
+private enum SignUpConstants {
+    static let appName = "Eatery"
+    static let email = "Email"
+    static let username = "Username"
+    static let password = "Password"
+    static let signUpButtonName = "Sign Up"
+    static let signInButtonName = "Sign In"
+}
+
 class SignUpViewController: UIViewController {
     
     // MARK: - Constants
     
-    private let labelApp = SignUpElement.setTextLabel(name: SignUpConstants.appName)
-    private let emailTextField = SignUpElement.setTextField(name: SignUpConstants.email)
-    private let usernameTextField = SignUpElement.setTextField(name: SignUpConstants.username)
-    private let passwordTextField = SignUpElement.setTextField(name: SignUpConstants.password)
-    private let signUpButton = SignUpElement.setButton(name: SignUpConstants.signUpButtonName, function: #selector(signUpClicked))
-    private let signInButton = SignUpElement.setButton(name: SignUpConstants.signInButtonName, function: #selector(signInClicked))
+    private let labelApp = SignUpElementStyle.createTextLabel(name: SignUpConstants.appName)
+    private let emailTextField = SignUpElementStyle.createTextField(name: SignUpConstants.email)
+    private let usernameTextField = SignUpElementStyle.createTextField(name: SignUpConstants.username)
+    private let passwordTextField = SignUpElementStyle.createTextField(name: SignUpConstants.password)
+    private let signUpButton = SignUpElementStyle.createButton(name: SignUpConstants.signUpButtonName, function: #selector(signUpClicked))
+    private let signInButton = SignUpElementStyle.createButton(name: SignUpConstants.signInButtonName, function: #selector(signInClicked))
     private let userAuthorizer = UserAuthorizer()
     
     // MARK: - viewDidLoad
@@ -105,13 +114,4 @@ class SignUpViewController: UIViewController {
         destinationVC.modalTransitionStyle = .crossDissolve
         self.present(destinationVC, animated: true, completion: nil)
     }
-}
-
-private enum SignUpConstants {
-    static let appName = "Eatery"
-    static let email = "Email"
-    static let username = "Username"
-    static let password = "Password"
-    static let signUpButtonName = "Sign Up"
-    static let signInButtonName = "Sign In"
 }

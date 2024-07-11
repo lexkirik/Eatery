@@ -8,28 +8,30 @@
 import Foundation
 import GooglePlaces
 
-struct RestaurantInfoModel {
-    static var name = ""
-    static var description = ""
-    static var rating = ""
-    static var priceLevel = 0
-    static var address = ""
-    static var website = ""
-    static var phoneNumber = ""
-    static var url = URL(string: "")
-    static var openingHoursArray = [String]()
-    static var coordinate = CLLocationCoordinate2D()
+class RestaurantInfoModel {
+    var name = ""
+    var description = ""
+    var rating = ""
+    var priceLevel = 0
+    var address = ""
+    var website = ""
+    var phoneNumber = ""
+    var url = URL(string: "")
+    var openingHoursArray = [""]
+    var coordinate = CLLocationCoordinate2D()
     
-    init(place: GMSPlace) {
-        RestaurantInfoModel.name = place.name ?? "no information"
-        RestaurantInfoModel.address = place.formattedAddress ?? "no information"
-        RestaurantInfoModel.website = place.website?.description ?? "no information"
-        RestaurantInfoModel.phoneNumber = place.phoneNumber ?? "no information"
-        RestaurantInfoModel.description = place.editorialSummary ?? ""
-        RestaurantInfoModel.priceLevel = place.priceLevel.rawValue
-        RestaurantInfoModel.rating = place.rating.description
-        RestaurantInfoModel.url = place.website
-        RestaurantInfoModel.openingHoursArray = place.openingHours?.weekdayText ?? [""]
-        RestaurantInfoModel.coordinate = place.coordinate
+    static var shared = RestaurantInfoModel()
+    
+    init(name: String = "", description: String = "", rating: String = "", priceLevel: Int = 0, address: String = "", website: String = "", phoneNumber: String = "", url: URL? = nil, openingHoursArray: [String] = [""], coordinate: CLLocationCoordinate2D = CLLocationCoordinate2D()) {
+        self.name = name
+        self.description = description
+        self.rating = rating
+        self.priceLevel = priceLevel
+        self.address = address
+        self.website = website
+        self.phoneNumber = phoneNumber
+        self.url = url
+        self.openingHoursArray = openingHoursArray
+        self.coordinate = coordinate
     }
 }

@@ -38,7 +38,7 @@
 		52C86B042C10694100706FA1 /* GoogleMaps in Frameworks */ = {isa = PBXBuildFile; productRef = 52C86B032C10694100706FA1 /* GoogleMaps */; };
 		52C86B072C108B3600706FA1 /* GooglePlaces in Frameworks */ = {isa = PBXBuildFile; productRef = 52C86B062C108B3600706FA1 /* GooglePlaces */; };
 		52D435FD2C0A4B15007FD9E4 /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D435FC2C0A4B15007FD9E4 /* SignUpViewController.swift */; };
-		52D435FF2C0A4DBC007FD9E4 /* SignUpElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D435FE2C0A4DBC007FD9E4 /* SignUpElement.swift */; };
+		52D435FF2C0A4DBC007FD9E4 /* SignUpElementStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D435FE2C0A4DBC007FD9E4 /* SignUpElementStyle.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -80,7 +80,7 @@
 		52A9D2DA2C133F56005BAA3C /* ButtonAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonAnimation.swift; sourceTree = "<group>"; };
 		52A9D2DC2C135259005BAA3C /* GlobalConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalConstants.swift; sourceTree = "<group>"; };
 		52D435FC2C0A4B15007FD9E4 /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
-		52D435FE2C0A4DBC007FD9E4 /* SignUpElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpElement.swift; sourceTree = "<group>"; };
+		52D435FE2C0A4DBC007FD9E4 /* SignUpElementStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpElementStyle.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -162,7 +162,7 @@
 		52A3DD052C1B6453003D9194 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				52D435FE2C0A4DBC007FD9E4 /* SignUpElement.swift */,
+				52D435FE2C0A4DBC007FD9E4 /* SignUpElementStyle.swift */,
 				52A3DCFC2C18B43E003D9194 /* RestaurantInfoModel.swift */,
 				52A3DCFE2C18CC8F003D9194 /* RestaurantInfoCell.swift */,
 				52A3DD022C19F4E7003D9194 /* RestaurantDetail.swift */,
@@ -285,7 +285,7 @@
 				52A3DD012C19F4BB003D9194 /* FriendRestaurantOption.swift in Sources */,
 				52A3DCFB2C189CBE003D9194 /* RestaurantInfoVC.swift in Sources */,
 				52A3DCFD2C18B43E003D9194 /* RestaurantInfoModel.swift in Sources */,
-				52D435FF2C0A4DBC007FD9E4 /* SignUpElement.swift in Sources */,
+				52D435FF2C0A4DBC007FD9E4 /* SignUpElementStyle.swift in Sources */,
 				52181CE32C16E361007B4F23 /* FriendsRestaurantListVC.swift in Sources */,
 				52888FC22C08ED9E00A611E7 /* ViewController.swift in Sources */,
 				523BA8EB2C36829E00FCE03B /* RestaurantInfoPostMaker.swift in Sources */,

@@ -9,13 +9,24 @@ import UIKit
 import GoogleMaps
 import SnapKit
 
+private enum RestaurantInfoConstants {
+    static let buttonGoingToRestaurantTitle = "I'm going to this place"
+    static let ratingImageName = "star.fill"
+    static let openingHoursImageName = "clock.fill"
+    static let openingHoursTitle = "Opening hours"
+    static let contactsTitle = "Contacts"
+    static let addressImageName = "mappin.and.ellipse"
+    static let websiteImageName = "globe.europe.africa.fill"
+    static let phoneNumberImageName = "phone.fill"
+    static let unknownPrice = "N/A"
+}
+
 class RestaurantInfoVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     // MARK: - Constants
     
     private let nameLabel: UILabel = {
         let label = UILabel()
-        label.text = ""
         label.translatesAutoresizingMaskIntoConstraints = true
         label.font = UIFont.systemFont(ofSize: 24, weight: .bold)
         label.textAlignment = .center
@@ -26,7 +37,6 @@ class RestaurantInfoVC: UIViewController, UITableViewDelegate, UITableViewDataSo
     
     private let summaryLabel: UILabel = {
         let label = UILabel()
-        label.text = ""
         label.translatesAutoresizingMaskIntoConstraints = true
         label.font = UIFont.systemFont(ofSize: 14, weight: .regular)
         label.textAlignment = .center
@@ -63,7 +73,6 @@ class RestaurantInfoVC: UIViewController, UITableViewDelegate, UITableViewDataSo
     
     private let ratingNumberLabel: UILabel = {
        let label = UILabel()
-        label.text = ""
         label.translatesAutoresizingMaskIntoConstraints = true
         label.font = UIFont.systemFont(ofSize: 16, weight: .regular)
         label.textAlignment = .center
@@ -74,7 +83,6 @@ class RestaurantInfoVC: UIViewController, UITableViewDelegate, UITableViewDataSo
     
     private let priceLevelLabel: UILabel = {
        let label = UILabel()
-        label.text = ""
         label.translatesAutoresizingMaskIntoConstraints = true
         label.font = UIFont.systemFont(ofSize: 16, weight: .regular)
         label.textAlignment = .center
@@ -101,9 +109,10 @@ class RestaurantInfoVC: UIViewController, UITableViewDelegate, UITableViewDataSo
         view.addSubview(ratingImageView)
         view.addSubview(ratingNumberLabel)
         view.addSubview(priceLevelLabel)
-        nameLabel.text = RestaurantInfoModel.name
-        summaryLabel.text = RestaurantInfoModel.description
-        ratingNumberLabel.text = RestaurantInfoModel.rating
+        
+        nameLabel.text = RestaurantInfoModel.shared.name
+        summaryLabel.text = RestaurantInfoModel.shared.description
+        ratingNumberLabel.text = RestaurantInfoModel.shared.rating
         priceLevelToDollarSymbol()
         
         setConstraints()
@@ -114,23 +123,23 @@ class RestaurantInfoVC: UIViewController, UITableViewDelegate, UITableViewDataSo
     
     private func configure() {
         var openingHoursArray = [RestaurantDetail]()
-        for num in 0...RestaurantInfoModel.openingHoursArray.count - 1 {
-            openingHoursArray.append(RestaurantDetail(icon: imageForOpeningHours, detail: RestaurantInfoModel.openingHoursArray[num]))
+        for num in 0...RestaurantInfoModel.shared.openingHoursArray.count - 1 {
+            openingHoursArray.append(RestaurantDetail(icon: imageForOpeningHours, detail: RestaurantInfoModel.shared.openingHoursArray[num]))
         }
         models.append(Section(title: RestaurantInfoConstants.openingHoursTitle, options: openingHoursArray))
         
         models.append(Section(title: RestaurantInfoConstants.contactsTitle, options: [
             RestaurantDetail(
                 icon: UIImage(systemName: RestaurantInfoConstants.addressImageName),
-                detail: RestaurantInfoModel.address
+                detail: RestaurantInfoModel.shared.address
             ),
             RestaurantDetail(
                 icon: UIImage(systemName: RestaurantInfoConstants.websiteImageName),
-                detail: RestaurantInfoModel.website
+                detail: RestaurantInfoModel.shared.website
             ),
             RestaurantDetail(
                 icon: UIImage(systemName: RestaurantInfoConstants.phoneNumberImageName),
-                detail: RestaurantInfoModel.phoneNumber
+                detail: RestaurantInfoModel.shared.phoneNumber
             )
         ]))
     }
@@ -159,7 +168,7 @@ class RestaurantInfoVC: UIViewController, UITableViewDelegate, UITableViewDataSo
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 1 && indexPath.row == 1 {
-            if let url = RestaurantInfoModel.url {
+            if let url = RestaurantInfoModel.shared.url as URL? {
                 UIApplication.shared.open(url)
             }
         }
@@ -173,20 +182,14 @@ class RestaurantInfoVC: UIViewController, UITableViewDelegate, UITableViewDataSo
     }
     
     private func priceLevelToDollarSymbol() {
-        let level = RestaurantInfoModel.priceLevel
-        
-        switch level {
-        case 1:
-            priceLevelLabel.text = RestaurantInfoConstants.priceLevelLow
-        case 2:
-            priceLevelLabel.text = RestaurantInfoConstants.priceLevelMedium
-        case 3:
-            priceLevelLabel.text = RestaurantInfoConstants.priceLevelMediumHigh
-        case 4:
-            priceLevelLabel.text = RestaurantInfoConstants.priceLevelHigh
-        default:
-            priceLevelLabel.text = ""
+        var levelText = RestaurantInfoConstants.unknownPrice
+        if RestaurantInfoModel.shared.priceLevel >= 0 {
+            levelText = "$"
+            for i in 0...RestaurantInfoModel.shared.priceLevel {
+                levelText += "$"
+            }
         }
+        priceLevelLabel.text = levelText
     }
     
     // MARK: - Constraints
@@ -237,19 +240,4 @@ class RestaurantInfoVC: UIViewController, UITableViewDelegate, UITableViewDataSo
             make.height.equalTo(30)
         }
     }
-}
-
-private enum RestaurantInfoConstants {
-    static let buttonGoingToRestaurantTitle = "I'm going to this place"
-    static let ratingImageName = "star.fill"
-    static let openingHoursImageName = "clock.fill"
-    static let openingHoursTitle = "Opening hours"
-    static let contactsTitle = "Contacts"
-    static let addressImageName = "mappin.and.ellipse"
-    static let websiteImageName = "globe.europe.africa.fill"
-    static let phoneNumberImageName = "phone.fill"
-    static let priceLevelLow = "$"
-    static let priceLevelMedium = "$$"
-    static let priceLevelMediumHigh = "$$$"
-    static let priceLevelHigh = "$$$$"
 }

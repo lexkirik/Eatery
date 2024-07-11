@@ -116,12 +116,7 @@ class FriendsRestaurantListVC: UIViewController, UITableViewDataSource, UITableV
         let restaurantInfoPostMaker = RestaurantInfoPostMaker()
         restaurantInfoPostMaker.getDataFromRestaurantInfoPostForLast12Hours { result in
             if result == .success {
-                self.models.append(FriendRestaurantOption(
-                    friendName: RestaurantInfoPostMaker.friendName,
-                    restaurant: RestaurantInfoPostMaker.restaurant,
-                    longitude: RestaurantInfoPostMaker.longitude,
-                    latitude: RestaurantInfoPostMaker.latitude)
-                )
+                self.models.append(FriendRestaurantOption.shared)
             }
             if result == .error {
                 print("Error getting data from a Firestore post")
