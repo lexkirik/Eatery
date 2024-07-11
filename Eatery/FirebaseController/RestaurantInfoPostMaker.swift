@@ -21,7 +21,7 @@ class RestaurantInfoPostMaker: RestaurantInfoPostMakerProtocol {
     func addRestaurauntInfoPost() {
         let firestorePost = [
             RestaurantInfoPost.friendEmail : Auth.auth().currentUser?.email ?? "email",
-            RestaurantInfoPost.friendName : CurrentUser.username,
+            RestaurantInfoPost.friendName : CurrentUser.shared.username,
             RestaurantInfoPost.restaurant : RestaurantInfoModel.name,
             RestaurantInfoPost.date : timeNow,
             RestaurantInfoPost.latitude : RestaurantInfoModel.coordinate.latitude,
@@ -45,7 +45,7 @@ class RestaurantInfoPostMaker: RestaurantInfoPostMakerProtocol {
                 if snapshot?.isEmpty != true && snapshot != nil {
                     for document in snapshot!.documents {
                         if let name = document.get(RestaurantInfoPost.friendName) as? String, let rest = document.get(RestaurantInfoPost.restaurant) as? String {
-                            if name != CurrentUser.username {
+                            if name != CurrentUser.shared.username {
                                 if let longitude = document.get(RestaurantInfoPost.longitude) as? Double, let latitude = document.get(RestaurantInfoPost.latitude) as? Double {
                                     RestaurantInfoPostMaker.friendName = name
                                     RestaurantInfoPostMaker.restaurant = rest

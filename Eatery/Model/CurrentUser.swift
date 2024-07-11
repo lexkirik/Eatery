@@ -7,6 +7,9 @@
 
 import Foundation
 
-struct CurrentUser {
-    static var username = ""
+class CurrentUser {
+    
+    static let shared = CurrentUser()
+    
+    var username = ""
 }

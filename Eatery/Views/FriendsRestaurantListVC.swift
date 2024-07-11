@@ -63,7 +63,15 @@ class FriendsRestaurantListVC: UIViewController, UITableViewDataSource, UITableV
     
     // MARK: - TableView functions
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    private func setTableViewConstraints() {
+        tableView.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.height.equalToSuperview().dividedBy(3)
+            make.width.equalToSuperview()
+        }
+    }
+    
+    internal func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if models.count > 0 {
             return models.count
         } else {
@@ -71,7 +79,7 @@ class FriendsRestaurantListVC: UIViewController, UITableViewDataSource, UITableV
         }
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    internal func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if models.count == 0 {
             let model = defaultModels[indexPath.row]
             guard let cell = tableView.dequeueReusableCell(withIdentifier: FriendsTableViewCell.identifier, for: indexPath) as? FriendsTableViewCell else {
@@ -89,15 +97,7 @@ class FriendsRestaurantListVC: UIViewController, UITableViewDataSource, UITableV
         }
     }
     
-    private func setTableViewConstraints() {
-        tableView.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.height.equalToSuperview().dividedBy(3)
-            make.width.equalToSuperview()
-        }
-    }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    internal func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         longitude = models[indexPath.row].longitude
         latitude = models[indexPath.row].latitude
         mapView.camera = GMSCameraPosition(
@@ -158,7 +158,7 @@ class FriendsRestaurantListVC: UIViewController, UITableViewDataSource, UITableV
         }
     }
     
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+    internal func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         let location: CLLocation = locations.last ?? GlobalConstants.defaultLocation
         let zoomLevel = locationManager.accuracyAuthorization == .fullAccuracy ? GlobalConstants.preciseLocationZoomLevel : GlobalConstants.approximateLocationZoomLevel
         let camera = GMSCameraPosition.camera(
@@ -175,12 +175,12 @@ class FriendsRestaurantListVC: UIViewController, UITableViewDataSource, UITableV
         }
     }
     
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: any Error) {
+    internal func locationManager(_ manager: CLLocationManager, didFailWithError error: any Error) {
         locationManager.stopUpdatingLocation()
         print("Error: \(error)")
     }
     
-    func createMarkersWithinBounds() {
+    private func createMarkersWithinBounds() {
         if models.count == 0 {
             let mapCenter = CLLocationCoordinate2DMake(GlobalConstants.defaultLocation.coordinate.latitude, GlobalConstants.defaultLocation.coordinate.longitude)
             let marker = GMSMarker(position: mapCenter)
