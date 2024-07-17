@@ -8,21 +8,11 @@
 import Foundation
 
 protocol RestaurantInfoPostMakerProtocol {
-    func addRestaurauntInfoPost()
+    func addRestaurauntInfoPost(name: String, latitude: Double, longitude: Double)
     func getDataFromRestaurantInfoPostForLast12Hours(completion: @escaping (_ result: DataFromRestaurantInfoPost) -> ())
 }
 
 enum DataFromRestaurantInfoPost: Error, Equatable {
     case success
     case error
-    
-    var restarauntInfo: Any {
-        switch self {
-        case .success:
-            return FriendRestaurantOption()
-        case .error:
-            print("error")
-        }
-        return self
-    }
 }

@@ -65,10 +65,15 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
         return filter
     }()
     
+    private var currentRestarauntInfo = RestaurantInfoModel()
+
     // MARK: - viewDidLoad
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let userAuth = UserAuthorizer()
+        userAuth.getCurrentUserName()
         
         locationManager.delegate = self
         
@@ -97,7 +102,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
         setUserMenuButtonConstraints()
         mapView.isHidden = true
     }
-
+    
     // MARK: - MapView functions
     
     private func setMapView() {
@@ -160,7 +165,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
             
             if let place = place {
                 self.addMarker(place: place)
-                RestaurantInfoModel.shared = RestaurantInfoModel(
+                self.currentRestarauntInfo = RestaurantInfoModel(
                     name: place.name ?? "no information",
                     description: place.editorialSummary ?? "",
                     rating: place.rating.description,
@@ -188,6 +193,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
         let VC = RestaurantInfoVC()
         VC.modalPresentationStyle = .popover
         VC.modalTransitionStyle = .crossDissolve
+        VC.infoDelegate = VC
+        VC.infoDelegate?.updateInfoRestModel(with: currentRestarauntInfo)
         present(VC, animated: true, completion: nil)
     }
     
@@ -206,7 +213,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
         ])
         
         addMarker(place: place)
-        RestaurantInfoModel.shared = RestaurantInfoModel(
+        currentRestarauntInfo = RestaurantInfoModel(
             name: place.name ?? "no information",
             description: place.editorialSummary ?? "",
             rating: place.rating.description,
@@ -256,6 +263,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
         let logOut = UIAction(title: UserMenuConstants.logOutTitle) { _ in
             do {
                 try Auth.auth().signOut()
+                CurrentUser.shared.name = ""
                 let destinationVC = SignUpViewController()
                 destinationVC.modalPresentationStyle = .fullScreen
                 destinationVC.modalTransitionStyle = .crossDissolve
@@ -265,7 +273,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
             }
         }
         
-        let userMenu = UIMenu(title: UserMenuConstants.title, children: [myFriendsInfo, logOut])
+        let userMenu = UIMenu(title: "\(UserMenuConstants.title) \(Auth.auth().currentUser?.email ?? "")", children: [myFriendsInfo, logOut])
         userMenuButton.menu = userMenu
         userMenuButton.showsMenuAsPrimaryAction = true
     }

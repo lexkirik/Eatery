@@ -19,9 +19,13 @@ private enum RestaurantInfoConstants {
     static let websiteImageName = "globe.europe.africa.fill"
     static let phoneNumberImageName = "phone.fill"
     static let unknownPrice = "N/A"
+    static let priceLevelLow = "$"
+    static let priceLevelMedium = "$$"
+    static let priceLevelMediumHigh = "$$$"
+    static let priceLevelHigh = "$$$$"
 }
 
-class RestaurantInfoVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class RestaurantInfoVC: UIViewController, UITableViewDelegate, UITableViewDataSource, RestaurantInfoModelDelegate {
     
     // MARK: - Constants
     
@@ -93,11 +97,14 @@ class RestaurantInfoVC: UIViewController, UITableViewDelegate, UITableViewDataSo
     
     private var models = [Section]()
     private var imageForOpeningHours = UIImage(systemName: RestaurantInfoConstants.openingHoursImageName)
+    private var restaurantInfo = RestaurantInfoModel()
+    weak var infoDelegate: RestaurantInfoModelDelegate?
     
     // MARK: - viewDidLoad
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         configure()
         view.addSubview(tableView)
         tableView.delegate = self
@@ -110,9 +117,9 @@ class RestaurantInfoVC: UIViewController, UITableViewDelegate, UITableViewDataSo
         view.addSubview(ratingNumberLabel)
         view.addSubview(priceLevelLabel)
         
-        nameLabel.text = RestaurantInfoModel.shared.name
-        summaryLabel.text = RestaurantInfoModel.shared.description
-        ratingNumberLabel.text = RestaurantInfoModel.shared.rating
+        nameLabel.text = restaurantInfo.name
+        summaryLabel.text = restaurantInfo.description
+        ratingNumberLabel.text = restaurantInfo.rating
         priceLevelToDollarSymbol()
         
         setConstraints()
@@ -121,25 +128,29 @@ class RestaurantInfoVC: UIViewController, UITableViewDelegate, UITableViewDataSo
     
     // MARK: - TableView functions
     
+    func updateInfoRestModel(with model: RestaurantInfoModel) {
+        restaurantInfo = model
+    }
+    
     private func configure() {
         var openingHoursArray = [RestaurantDetail]()
-        for num in 0...RestaurantInfoModel.shared.openingHoursArray.count - 1 {
-            openingHoursArray.append(RestaurantDetail(icon: imageForOpeningHours, detail: RestaurantInfoModel.shared.openingHoursArray[num]))
+        for num in 0...restaurantInfo.openingHoursArray.count - 1 {
+            openingHoursArray.append(RestaurantDetail(icon: imageForOpeningHours, detail: restaurantInfo.openingHoursArray[num]))
         }
         models.append(Section(title: RestaurantInfoConstants.openingHoursTitle, options: openingHoursArray))
         
         models.append(Section(title: RestaurantInfoConstants.contactsTitle, options: [
             RestaurantDetail(
                 icon: UIImage(systemName: RestaurantInfoConstants.addressImageName),
-                detail: RestaurantInfoModel.shared.address
+                detail: restaurantInfo.address
             ),
             RestaurantDetail(
                 icon: UIImage(systemName: RestaurantInfoConstants.websiteImageName),
-                detail: RestaurantInfoModel.shared.website
+                detail: restaurantInfo.website
             ),
             RestaurantDetail(
                 icon: UIImage(systemName: RestaurantInfoConstants.phoneNumberImageName),
-                detail: RestaurantInfoModel.shared.phoneNumber
+                detail: restaurantInfo.phoneNumber
             )
         ]))
     }
@@ -168,7 +179,7 @@ class RestaurantInfoVC: UIViewController, UITableViewDelegate, UITableViewDataSo
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 1 && indexPath.row == 1 {
-            if let url = RestaurantInfoModel.shared.url as URL? {
+            if let url = restaurantInfo.url as URL? {
                 UIApplication.shared.open(url)
             }
         }
@@ -177,19 +188,29 @@ class RestaurantInfoVC: UIViewController, UITableViewDelegate, UITableViewDataSo
     @objc private func addRestaurauntToList(_ sender: UIButton) {
         sender.showAnimation {
             let restaurantInfoPostMaker = RestaurantInfoPostMaker()
-            restaurantInfoPostMaker.addRestaurauntInfoPost()
+            restaurantInfoPostMaker.addRestaurauntInfoPost(
+                name: self.restaurantInfo.name,
+                latitude: self.restaurantInfo.coordinate.latitude,
+                longitude: self.restaurantInfo.coordinate.longitude
+            )
         }
     }
     
     private func priceLevelToDollarSymbol() {
-        var levelText = RestaurantInfoConstants.unknownPrice
-        if RestaurantInfoModel.shared.priceLevel >= 0 {
-            levelText = "$"
-            for i in 0...RestaurantInfoModel.shared.priceLevel {
-                levelText += "$"
-            }
+        let level = restaurantInfo.priceLevel
+        
+        switch level {
+        case 1:
+            priceLevelLabel.text = RestaurantInfoConstants.priceLevelLow
+        case 2:
+            priceLevelLabel.text = RestaurantInfoConstants.priceLevelMedium
+        case 3:
+            priceLevelLabel.text = RestaurantInfoConstants.priceLevelMediumHigh
+        case 4:
+            priceLevelLabel.text = RestaurantInfoConstants.priceLevelHigh
+        default:
+            priceLevelLabel.text = RestaurantInfoConstants.unknownPrice
         }
-        priceLevelLabel.text = levelText
     }
     
     // MARK: - Constraints

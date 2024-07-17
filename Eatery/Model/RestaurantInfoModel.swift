@@ -8,7 +8,7 @@
 import Foundation
 import GooglePlaces
 
-class RestaurantInfoModel {
+struct RestaurantInfoModel {
     var name = ""
     var description = ""
     var rating = ""
@@ -19,8 +19,6 @@ class RestaurantInfoModel {
     var url = URL(string: "")
     var openingHoursArray = [""]
     var coordinate = CLLocationCoordinate2D()
-    
-    static var shared = RestaurantInfoModel()
     
     init(name: String = "", description: String = "", rating: String = "", priceLevel: Int = 0, address: String = "", website: String = "", phoneNumber: String = "", url: URL? = nil, openingHoursArray: [String] = [""], coordinate: CLLocationCoordinate2D = CLLocationCoordinate2D()) {
         self.name = name
@@ -34,4 +32,8 @@ class RestaurantInfoModel {
         self.openingHoursArray = openingHoursArray
         self.coordinate = coordinate
     }
+}
+
+protocol RestaurantInfoModelDelegate: AnyObject {
+    func updateInfoRestModel(with model: RestaurantInfoModel)
 }

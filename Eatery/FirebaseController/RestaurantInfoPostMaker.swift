@@ -9,20 +9,31 @@ import Foundation
 import FirebaseAuth
 import FirebaseFirestore
 
+private enum RestaurantInfoPost {
+    static var collectionName = "Restaurants"
+    static var friendEmail = "friendEmail"
+    static var friendName = "friendName"
+    static var restaurant = "restaurant"
+    static var date = "date"
+    static var latitude = "latitude"
+    static var longitude = "longitude"
+}
+
 class RestaurantInfoPostMaker: RestaurantInfoPostMakerProtocol {
     private let firestoreDatabase = Firestore.firestore()
     private var firestoreReference: DocumentReference? = nil
     private let timeNow = Date().timeIntervalSince1970
+    private var friendRestaraunt = FriendRestaurantOption()
+    private var options = [FriendRestaurantOption]()
     
-    func addRestaurauntInfoPost() {
-        
+    func addRestaurauntInfoPost(name: String, latitude: Double, longitude: Double) {
         let firestorePost = [
             RestaurantInfoPost.friendEmail : Auth.auth().currentUser?.email ?? "email",
-            RestaurantInfoPost.friendName : CurrentUser.shared.username,
-            RestaurantInfoPost.restaurant : RestaurantInfoModel.shared.name,
+            RestaurantInfoPost.friendName : CurrentUser.shared.name,
+            RestaurantInfoPost.restaurant : name,
             RestaurantInfoPost.date : timeNow,
-            RestaurantInfoPost.latitude : RestaurantInfoModel.shared.coordinate.latitude,
-            RestaurantInfoPost.longitude : RestaurantInfoModel.shared.coordinate.longitude
+            RestaurantInfoPost.latitude : latitude,
+            RestaurantInfoPost.longitude : longitude
         ] as [String : Any]
         
         firestoreReference = firestoreDatabase.collection(RestaurantInfoPost.collectionName).addDocument(data: firestorePost, completion: { (error) in
@@ -33,7 +44,7 @@ class RestaurantInfoPostMaker: RestaurantInfoPostMakerProtocol {
     }
     
     func getDataFromRestaurantInfoPostForLast12Hours(completion: @escaping (_ result: DataFromRestaurantInfoPost) -> ()) {
-        let time12HoursBeforeNow = timeNow - 12 * 60 * 60
+        let time12HoursBeforeNow = timeNow - 48 * 60 * 60
         
         firestoreDatabase.collection(RestaurantInfoPost.collectionName).whereField(RestaurantInfoPost.date, isGreaterThan: time12HoursBeforeNow).addSnapshotListener { snapshot, error in
             if error != nil {
@@ -42,9 +53,9 @@ class RestaurantInfoPostMaker: RestaurantInfoPostMakerProtocol {
                 if snapshot?.isEmpty != true && snapshot != nil {
                     for document in snapshot!.documents {
                         if let name = document.get(RestaurantInfoPost.friendName) as? String, let rest = document.get(RestaurantInfoPost.restaurant) as? String {
-                            if name != CurrentUser.shared.username {
+                  //          if name != CurrentUser.shared.username {
                                 if let longitude = document.get(RestaurantInfoPost.longitude) as? Double, let latitude = document.get(RestaurantInfoPost.latitude) as? Double {
-                                    FriendRestaurantOption.shared = FriendRestaurantOption(
+                                    FriendsRestaurantListVC.currentFriendRestarauntList = FriendRestaurantOption(
                                         friendName: name,
                                         restaurant: rest,
                                         longitude: longitude,
@@ -56,17 +67,7 @@ class RestaurantInfoPostMaker: RestaurantInfoPostMakerProtocol {
                         }
                     }
                 }
-            }
+          //  }
         }
     }
-}
-
-private enum RestaurantInfoPost {
-    static var collectionName = "Restaurants"
-    static var friendEmail = "friendEmail"
-    static var friendName = "friendName"
-    static var restaurant = "restaurant"
-    static var date = "date"
-    static var latitude = "latitude"
-    static var longitude = "longitude"
 }

@@ -9,6 +9,12 @@ import Foundation
 import FirebaseAuth
 import FirebaseFirestore
 
+private enum UserInfoPost {
+    static var collectionName = "Users"
+    static var username = "username"
+    static var userEmail = "userEmail"
+}
+
 class UserAuthorizer: UserAuthorizerProtocol {
     
     private let firestoreDatabase = Firestore.firestore()
@@ -30,10 +36,10 @@ class UserAuthorizer: UserAuthorizerProtocol {
                 if error != nil {
                     completion(.error(.failedSigningUpUser))
                 } else {
+                    CurrentUser.shared.name = name
                     completion(.success)
                 }
             }
-            CurrentUser.shared.username = name
         } else {
             completion(.error(.missingSignUpData))
         }
@@ -45,6 +51,7 @@ class UserAuthorizer: UserAuthorizerProtocol {
                 if error != nil {
                     completion(.error(.failedSigningInUser))
                 } else {
+                    self.getCurrentUserName()
                     completion(.success)
                 }
             }
@@ -53,27 +60,19 @@ class UserAuthorizer: UserAuthorizerProtocol {
         }
     }
     
-    func getCurrentUserName(currentAuthUser: User?) {
-        firestoreDatabase.collection(UserInfoPost.collectionName).addSnapshotListener { snapshot, error in
+    func getCurrentUserName() {
+        firestoreDatabase.collection(UserInfoPost.collectionName).whereField(UserInfoPost.userEmail, isEqualTo: Auth.auth().currentUser?.email as Any).addSnapshotListener { snapshot, error in
             if error != nil {
                 print(error?.localizedDescription ?? "error")
             } else {
                 if snapshot?.isEmpty != true && snapshot != nil {
                     for document in snapshot!.documents {
-                        if let email = document.get(UserInfoPost.userEmail) as? String, let name = document.get(UserInfoPost.username) as? String {
-                            if email == currentAuthUser?.email {
-                                CurrentUser.shared.username = name
-                            }
+                        if let name = document.get(UserInfoPost.username) as? String {
+                            CurrentUser.shared.name = name
                         }
                     }
                 }
             }
         }
     }
-}
-
-private enum UserInfoPost {
-    static var collectionName = "Users"
-    static var username = "username"
-    static var userEmail = "userEmail"
 }

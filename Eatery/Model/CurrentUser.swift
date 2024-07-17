@@ -9,5 +9,9 @@ import Foundation
 
 class CurrentUser {
     static let shared = CurrentUser()
-    var username = ""
+    var name = ""
+    
+    init(name: String = "") {
+        self.name = name
+    }
 }
