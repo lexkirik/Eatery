@@ -55,13 +55,13 @@ class RestaurantInfoPostMaker: RestaurantInfoPostMakerProtocol {
                         if let name = document.get(RestaurantInfoPost.friendName) as? String, let rest = document.get(RestaurantInfoPost.restaurant) as? String {
                   //          if name != CurrentUser.shared.username {
                                 if let longitude = document.get(RestaurantInfoPost.longitude) as? Double, let latitude = document.get(RestaurantInfoPost.latitude) as? Double {
-                                    FriendsRestaurantListVC.currentFriendRestarauntList = FriendRestaurantOption(
+                                    let option = FriendRestaurantOption(
                                         friendName: name,
                                         restaurant: rest,
                                         longitude: longitude,
                                         latitude: latitude
                                     )
-                                    completion(.success)
+                                    completion(.success(option))
                                 }
                             }
                         }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct FriendRestaurantOption {
+struct FriendRestaurantOption: Equatable {
     var friendName = ""
     var restaurant = ""
     var longitude = 0.0
