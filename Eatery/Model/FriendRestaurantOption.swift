@@ -7,13 +7,13 @@
 
 import Foundation
 
-struct FriendRestaurantOption {
-    var friendName = ""
-    var restaurant = ""
-    var longitude = 0.0
-    var latitude = 0.0
+struct FriendRestaurantOption: Equatable {
+    let friendName: String
+    let restaurant: String
+    let longitude: Double
+    let latitude: Double
     
-    init(friendName: String = "", restaurant: String = "", longitude: Double = 0.0, latitude: Double = 0.0) {
+    init(friendName: String, restaurant: String, longitude: Double, latitude: Double) {
         self.friendName = friendName
         self.restaurant = restaurant
         self.longitude = longitude

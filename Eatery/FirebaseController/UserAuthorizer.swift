@@ -61,14 +61,22 @@ class UserAuthorizer: UserAuthorizerProtocol {
     }
     
     func getCurrentUserName() {
-        firestoreDatabase.collection(UserInfoPost.collectionName).whereField(UserInfoPost.userEmail, isEqualTo: Auth.auth().currentUser?.email as Any).addSnapshotListener { snapshot, error in
-            if error != nil {
-                print(error?.localizedDescription ?? "error")
-            } else {
-                if snapshot?.isEmpty != true && snapshot != nil {
-                    for document in snapshot!.documents {
-                        if let name = document.get(UserInfoPost.username) as? String {
-                            CurrentUser.shared.name = name
+        let queue = DispatchQueue(label: "background", qos: .background)
+        queue.async {
+            self.firestoreDatabase.collection(UserInfoPost.collectionName).whereField(UserInfoPost.userEmail, isEqualTo: Auth.auth().currentUser?.email as Any).addSnapshotListener { snapshot, error in
+                
+                if error != nil {
+                    print(error?.localizedDescription ?? "error")
+                } else {
+                    
+                    if snapshot?.isEmpty != true && snapshot != nil {
+                        for document in snapshot!.documents {
+                            
+                            if let name = document.get(UserInfoPost.username) as? String {
+                                DispatchQueue.main.async {
+                                    CurrentUser.shared.name = name
+                                }
+                            }
                         }
                     }
                 }

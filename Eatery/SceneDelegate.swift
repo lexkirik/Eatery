@@ -19,9 +19,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         let currentAuthUser = Auth.auth().currentUser
         
-        let userAuth = UserAuthorizer()
-        userAuth.getCurrentUserName()
-        
         let mapviewContoller = ViewController()
         let signUpVC = SignUpViewController()
         

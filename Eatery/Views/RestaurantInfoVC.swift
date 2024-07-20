@@ -18,14 +18,32 @@ private enum RestaurantInfoConstants {
     static let addressImageName = "mappin.and.ellipse"
     static let websiteImageName = "globe.europe.africa.fill"
     static let phoneNumberImageName = "phone.fill"
-    static let unknownPrice = "N/A"
-    static let priceLevelLow = "$"
-    static let priceLevelMedium = "$$"
-    static let priceLevelMediumHigh = "$$$"
-    static let priceLevelHigh = "$$$$"
 }
 
-class RestaurantInfoVC: UIViewController, UITableViewDelegate, UITableViewDataSource, RestaurantInfoModelDelegate {
+private enum PricelLevel {
+    case low
+    case medium
+    case mediumHigh
+    case high
+    case unknown
+    
+    var levelSymbol: String {
+        switch self {
+        case .low:
+            return "$"
+        case .medium:
+            return "$$"
+        case .mediumHigh:
+            return "$$$"
+        case .high:
+            return "$$$$"
+        case .unknown:
+            return "N/A"
+        }
+    }
+}
+
+class RestaurantInfoVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     // MARK: - Constants
     
@@ -96,9 +114,8 @@ class RestaurantInfoVC: UIViewController, UITableViewDelegate, UITableViewDataSo
     }()
     
     private var models = [Section]()
-    private var imageForOpeningHours = UIImage(systemName: RestaurantInfoConstants.openingHoursImageName)
-    private var restaurantInfo = RestaurantInfoModel()
-    weak var infoDelegate: RestaurantInfoModelDelegate?
+    var completion: ((RestaurantInfoModel) -> ())?
+    var restaurantInfo: RestaurantInfoModel?
     
     // MARK: - viewDidLoad
     
@@ -117,9 +134,9 @@ class RestaurantInfoVC: UIViewController, UITableViewDelegate, UITableViewDataSo
         view.addSubview(ratingNumberLabel)
         view.addSubview(priceLevelLabel)
         
-        nameLabel.text = restaurantInfo.name
-        summaryLabel.text = restaurantInfo.description
-        ratingNumberLabel.text = restaurantInfo.rating
+        nameLabel.text = restaurantInfo?.name
+        summaryLabel.text = restaurantInfo?.description
+        ratingNumberLabel.text = restaurantInfo?.rating
         priceLevelToDollarSymbol()
         
         setConstraints()
@@ -128,29 +145,28 @@ class RestaurantInfoVC: UIViewController, UITableViewDelegate, UITableViewDataSo
     
     // MARK: - TableView functions
     
-    func updateInfoRestModel(with model: RestaurantInfoModel) {
-        restaurantInfo = model
-    }
-    
     private func configure() {
         var openingHoursArray = [RestaurantDetail]()
-        for num in 0...restaurantInfo.openingHoursArray.count - 1 {
-            openingHoursArray.append(RestaurantDetail(icon: imageForOpeningHours, detail: restaurantInfo.openingHoursArray[num]))
+        for num in 0...(restaurantInfo?.openingHoursArray.count ?? 1) - 1 {
+            openingHoursArray.append(RestaurantDetail(
+                icon: UIImage(systemName: RestaurantInfoConstants.openingHoursImageName),
+                detail: restaurantInfo!.openingHoursArray[num]
+            ))
         }
         models.append(Section(title: RestaurantInfoConstants.openingHoursTitle, options: openingHoursArray))
         
         models.append(Section(title: RestaurantInfoConstants.contactsTitle, options: [
             RestaurantDetail(
                 icon: UIImage(systemName: RestaurantInfoConstants.addressImageName),
-                detail: restaurantInfo.address
+                detail: restaurantInfo?.address ?? ""
             ),
             RestaurantDetail(
                 icon: UIImage(systemName: RestaurantInfoConstants.websiteImageName),
-                detail: restaurantInfo.website
+                detail: restaurantInfo?.website ?? ""
             ),
             RestaurantDetail(
                 icon: UIImage(systemName: RestaurantInfoConstants.phoneNumberImageName),
-                detail: restaurantInfo.phoneNumber
+                detail: restaurantInfo?.phoneNumber ?? ""
             )
         ]))
     }
@@ -179,7 +195,7 @@ class RestaurantInfoVC: UIViewController, UITableViewDelegate, UITableViewDataSo
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 1 && indexPath.row == 1 {
-            if let url = restaurantInfo.url as URL? {
+            if let url = restaurantInfo?.url as URL? {
                 UIApplication.shared.open(url)
             }
         }
@@ -189,27 +205,27 @@ class RestaurantInfoVC: UIViewController, UITableViewDelegate, UITableViewDataSo
         sender.showAnimation {
             let restaurantInfoPostMaker = RestaurantInfoPostMaker()
             restaurantInfoPostMaker.addRestaurauntInfoPost(
-                name: self.restaurantInfo.name,
-                latitude: self.restaurantInfo.coordinate.latitude,
-                longitude: self.restaurantInfo.coordinate.longitude
+                name: self.restaurantInfo?.name ?? "",
+                latitude: self.restaurantInfo?.coordinate.latitude ?? 0.0,
+                longitude: self.restaurantInfo?.coordinate.longitude ?? 0.0
             )
         }
     }
     
     private func priceLevelToDollarSymbol() {
-        let level = restaurantInfo.priceLevel
+        let level = restaurantInfo?.priceLevel
         
         switch level {
         case 1:
-            priceLevelLabel.text = RestaurantInfoConstants.priceLevelLow
+            priceLevelLabel.text = PricelLevel.low.levelSymbol
         case 2:
-            priceLevelLabel.text = RestaurantInfoConstants.priceLevelMedium
+            priceLevelLabel.text = PricelLevel.medium.levelSymbol
         case 3:
-            priceLevelLabel.text = RestaurantInfoConstants.priceLevelMediumHigh
+            priceLevelLabel.text = PricelLevel.mediumHigh.levelSymbol
         case 4:
-            priceLevelLabel.text = RestaurantInfoConstants.priceLevelHigh
+            priceLevelLabel.text = PricelLevel.high.levelSymbol
         default:
-            priceLevelLabel.text = RestaurantInfoConstants.unknownPrice
+            priceLevelLabel.text = PricelLevel.unknown.levelSymbol
         }
     }
     

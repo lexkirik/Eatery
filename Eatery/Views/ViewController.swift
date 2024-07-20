@@ -25,8 +25,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
     
     private var mapView = GMSMapView()
     private var placesClient = GMSPlacesClient()
-    private var preciseLocationZoomLevel: Float = 17.0
-    private var approximateLocationZoomLevel: Float = 10.0
     private var marker = GMSMarker()
     private var resultsViewController: GMSAutocompleteResultsViewController?
     private var searchController: UISearchController?
@@ -65,8 +63,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
         return filter
     }()
     
-    private var currentRestarauntInfo = RestaurantInfoModel()
-
+    private var currentRestarauntInfo: RestaurantInfoModel?
+    
     // MARK: - viewDidLoad
 
     override func viewDidLoad() {
@@ -193,8 +191,11 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
         let VC = RestaurantInfoVC()
         VC.modalPresentationStyle = .popover
         VC.modalTransitionStyle = .crossDissolve
-        VC.infoDelegate = VC
-        VC.infoDelegate?.updateInfoRestModel(with: currentRestarauntInfo)
+        VC.restaurantInfo = currentRestarauntInfo
+        VC.completion = { [weak self] model in
+            self?.currentRestarauntInfo = model
+        }
+        VC.completion?(currentRestarauntInfo ?? RestaurantInfoModel(name: "", description: "", rating: "", priceLevel: 0, address: "", website: "", phoneNumber: "", openingHoursArray: [""], coordinate: GlobalConstants.defaultLocation.coordinate))
         present(VC, animated: true, completion: nil)
     }
     

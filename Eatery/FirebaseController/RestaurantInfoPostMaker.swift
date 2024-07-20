@@ -23,8 +23,6 @@ class RestaurantInfoPostMaker: RestaurantInfoPostMakerProtocol {
     private let firestoreDatabase = Firestore.firestore()
     private var firestoreReference: DocumentReference? = nil
     private let timeNow = Date().timeIntervalSince1970
-    private var friendRestaraunt = FriendRestaurantOption()
-    private var options = [FriendRestaurantOption]()
     
     func addRestaurauntInfoPost(name: String, latitude: Double, longitude: Double) {
         let firestorePost = [
@@ -55,13 +53,13 @@ class RestaurantInfoPostMaker: RestaurantInfoPostMakerProtocol {
                         if let name = document.get(RestaurantInfoPost.friendName) as? String, let rest = document.get(RestaurantInfoPost.restaurant) as? String {
                   //          if name != CurrentUser.shared.username {
                                 if let longitude = document.get(RestaurantInfoPost.longitude) as? Double, let latitude = document.get(RestaurantInfoPost.latitude) as? Double {
-                                    FriendsRestaurantListVC.currentFriendRestarauntList = FriendRestaurantOption(
+                                    let option = FriendRestaurantOption(
                                         friendName: name,
                                         restaurant: rest,
                                         longitude: longitude,
                                         latitude: latitude
                                     )
-                                    completion(.success)
+                                    completion(.success(option))
                                 }
                             }
                         }
