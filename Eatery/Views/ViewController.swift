@@ -192,9 +192,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
         VC.modalPresentationStyle = .popover
         VC.modalTransitionStyle = .crossDissolve
         VC.restaurantInfo = currentRestarauntInfo
-        VC.completion = { [weak self] model in
-            self?.currentRestarauntInfo = model
-        }
         VC.completion?(currentRestarauntInfo ?? RestaurantInfoModel(name: "", description: "", rating: "", priceLevel: 0, address: "", website: "", phoneNumber: "", openingHoursArray: [""], coordinate: GlobalConstants.defaultLocation.coordinate))
         present(VC, animated: true, completion: nil)
     }

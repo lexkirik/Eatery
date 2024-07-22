@@ -122,6 +122,10 @@ class RestaurantInfoVC: UIViewController, UITableViewDelegate, UITableViewDataSo
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        completion = { [weak self] model in
+            self?.restaurantInfo = model
+        }
+        
         configure()
         view.addSubview(tableView)
         tableView.delegate = self

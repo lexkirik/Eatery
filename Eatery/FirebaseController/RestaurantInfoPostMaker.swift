@@ -42,7 +42,7 @@ class RestaurantInfoPostMaker: RestaurantInfoPostMakerProtocol {
     }
     
     func getDataFromRestaurantInfoPostForLast12Hours(completion: @escaping (_ result: DataFromRestaurantInfoPost) -> ()) {
-        let time12HoursBeforeNow = timeNow - 48 * 60 * 60
+        let time12HoursBeforeNow = timeNow - 12 * 60 * 60
         
         firestoreDatabase.collection(RestaurantInfoPost.collectionName).whereField(RestaurantInfoPost.date, isGreaterThan: time12HoursBeforeNow).addSnapshotListener { snapshot, error in
             if error != nil {

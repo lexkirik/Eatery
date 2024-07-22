@@ -117,7 +117,13 @@ class FriendsRestaurantListVC: UIViewController, UITableViewDataSource, UITableV
     private func getDataFromFirestore() {
         let restaurantInfoPostMaker = RestaurantInfoPostMaker()
         restaurantInfoPostMaker.getDataFromRestaurantInfoPostForLast12Hours { result in
-            if result != .error {
+            let friendList = result.option
+            if result == .success(friendList ?? FriendRestaurantOption(
+                friendName: "",
+                restaurant: "",
+                longitude: GlobalConstants.defaultLocation.coordinate.longitude,
+                latitude: GlobalConstants.defaultLocation.coordinate.latitude
+            )) {
                 if let friendList = result.option {
                     self.models.append(friendList)
                 }
