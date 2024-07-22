@@ -14,6 +14,7 @@
 		523BA8E92C3536B000FCE03B /* UserAuthorizerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 523BA8E82C3536B000FCE03B /* UserAuthorizerProtocol.swift */; };
 		523BA8EB2C36829E00FCE03B /* RestaurantInfoPostMaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 523BA8EA2C36829E00FCE03B /* RestaurantInfoPostMaker.swift */; };
 		523BA8ED2C3695B400FCE03B /* RestaurantInfoPostMakerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 523BA8EC2C3695B400FCE03B /* RestaurantInfoPostMakerProtocol.swift */; };
+		524534332C4E55B900632F18 /* EateryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 524534322C4E55B900632F18 /* EateryTests.swift */; };
 		527E59A42C0A41090088D2F0 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 527E59A32C0A41090088D2F0 /* GoogleService-Info.plist */; };
 		52888FBE2C08ED9E00A611E7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52888FBD2C08ED9E00A611E7 /* AppDelegate.swift */; };
 		52888FC02C08ED9E00A611E7 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52888FBF2C08ED9E00A611E7 /* SceneDelegate.swift */; };
@@ -38,8 +39,18 @@
 		52C86B042C10694100706FA1 /* GoogleMaps in Frameworks */ = {isa = PBXBuildFile; productRef = 52C86B032C10694100706FA1 /* GoogleMaps */; };
 		52C86B072C108B3600706FA1 /* GooglePlaces in Frameworks */ = {isa = PBXBuildFile; productRef = 52C86B062C108B3600706FA1 /* GooglePlaces */; };
 		52D435FD2C0A4B15007FD9E4 /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D435FC2C0A4B15007FD9E4 /* SignUpViewController.swift */; };
-		52D435FF2C0A4DBC007FD9E4 /* SignUpElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D435FE2C0A4DBC007FD9E4 /* SignUpElement.swift */; };
+		52D435FF2C0A4DBC007FD9E4 /* SignUpElementStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D435FE2C0A4DBC007FD9E4 /* SignUpElementStyle.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		524534342C4E55B900632F18 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 52888FB22C08ED9D00A611E7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 52888FB92C08ED9E00A611E7;
+			remoteInfo = Eatery;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		523074992C0E3CFB005AC59B /* Embed Frameworks */ = {
@@ -63,6 +74,8 @@
 		523BA8E82C3536B000FCE03B /* UserAuthorizerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAuthorizerProtocol.swift; sourceTree = "<group>"; };
 		523BA8EA2C36829E00FCE03B /* RestaurantInfoPostMaker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestaurantInfoPostMaker.swift; sourceTree = "<group>"; };
 		523BA8EC2C3695B400FCE03B /* RestaurantInfoPostMakerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestaurantInfoPostMakerProtocol.swift; sourceTree = "<group>"; };
+		524534302C4E55B900632F18 /* EateryTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EateryTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		524534322C4E55B900632F18 /* EateryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EateryTests.swift; sourceTree = "<group>"; };
 		527E59A32C0A41090088D2F0 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		52888FBA2C08ED9E00A611E7 /* Eatery.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Eatery.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		52888FBD2C08ED9E00A611E7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -80,10 +93,17 @@
 		52A9D2DA2C133F56005BAA3C /* ButtonAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonAnimation.swift; sourceTree = "<group>"; };
 		52A9D2DC2C135259005BAA3C /* GlobalConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalConstants.swift; sourceTree = "<group>"; };
 		52D435FC2C0A4B15007FD9E4 /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
-		52D435FE2C0A4DBC007FD9E4 /* SignUpElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpElement.swift; sourceTree = "<group>"; };
+		52D435FE2C0A4DBC007FD9E4 /* SignUpElementStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpElementStyle.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		5245342D2C4E55B900632F18 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		52888FB72C08ED9E00A611E7 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -113,10 +133,19 @@
 			path = FirebaseController;
 			sourceTree = "<group>";
 		};
+		524534312C4E55B900632F18 /* EateryTests */ = {
+			isa = PBXGroup;
+			children = (
+				524534322C4E55B900632F18 /* EateryTests.swift */,
+			);
+			path = EateryTests;
+			sourceTree = "<group>";
+		};
 		52888FB12C08ED9D00A611E7 = {
 			isa = PBXGroup;
 			children = (
 				52888FBC2C08ED9E00A611E7 /* Eatery */,
+				524534312C4E55B900632F18 /* EateryTests */,
 				52888FBB2C08ED9E00A611E7 /* Products */,
 				52D436022C0B5618007FD9E4 /* Frameworks */,
 			);
@@ -126,6 +155,7 @@
 			isa = PBXGroup;
 			children = (
 				52888FBA2C08ED9E00A611E7 /* Eatery.app */,
+				524534302C4E55B900632F18 /* EateryTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -162,7 +192,7 @@
 		52A3DD052C1B6453003D9194 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				52D435FE2C0A4DBC007FD9E4 /* SignUpElement.swift */,
+				52D435FE2C0A4DBC007FD9E4 /* SignUpElementStyle.swift */,
 				52A3DCFC2C18B43E003D9194 /* RestaurantInfoModel.swift */,
 				52A3DCFE2C18CC8F003D9194 /* RestaurantInfoCell.swift */,
 				52A3DD022C19F4E7003D9194 /* RestaurantDetail.swift */,
@@ -192,6 +222,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		5245342F2C4E55B900632F18 /* EateryTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 524534382C4E55B900632F18 /* Build configuration list for PBXNativeTarget "EateryTests" */;
+			buildPhases = (
+				5245342C2C4E55B900632F18 /* Sources */,
+				5245342D2C4E55B900632F18 /* Frameworks */,
+				5245342E2C4E55B900632F18 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				524534352C4E55B900632F18 /* PBXTargetDependency */,
+			);
+			name = EateryTests;
+			productName = EateryTests;
+			productReference = 524534302C4E55B900632F18 /* EateryTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		52888FB92C08ED9E00A611E7 /* Eatery */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 52888FCE2C08ED9F00A611E7 /* Build configuration list for PBXNativeTarget "Eatery" */;
@@ -227,9 +275,13 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1530;
+				LastSwiftUpdateCheck = 1540;
 				LastUpgradeCheck = 1530;
 				TargetAttributes = {
+					5245342F2C4E55B900632F18 = {
+						CreatedOnToolsVersion = 15.4;
+						TestTargetID = 52888FB92C08ED9E00A611E7;
+					};
 					52888FB92C08ED9E00A611E7 = {
 						CreatedOnToolsVersion = 15.3;
 					};
@@ -255,11 +307,19 @@
 			projectRoot = "";
 			targets = (
 				52888FB92C08ED9E00A611E7 /* Eatery */,
+				5245342F2C4E55B900632F18 /* EateryTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		5245342E2C4E55B900632F18 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		52888FB82C08ED9E00A611E7 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -274,6 +334,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		5245342C2C4E55B900632F18 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				524534332C4E55B900632F18 /* EateryTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		52888FB62C08ED9E00A611E7 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -285,7 +353,7 @@
 				52A3DD012C19F4BB003D9194 /* FriendRestaurantOption.swift in Sources */,
 				52A3DCFB2C189CBE003D9194 /* RestaurantInfoVC.swift in Sources */,
 				52A3DCFD2C18B43E003D9194 /* RestaurantInfoModel.swift in Sources */,
-				52D435FF2C0A4DBC007FD9E4 /* SignUpElement.swift in Sources */,
+				52D435FF2C0A4DBC007FD9E4 /* SignUpElementStyle.swift in Sources */,
 				52181CE32C16E361007B4F23 /* FriendsRestaurantListVC.swift in Sources */,
 				52888FC22C08ED9E00A611E7 /* ViewController.swift in Sources */,
 				523BA8EB2C36829E00FCE03B /* RestaurantInfoPostMaker.swift in Sources */,
@@ -301,6 +369,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		524534352C4E55B900632F18 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 52888FB92C08ED9E00A611E7 /* Eatery */;
+			targetProxy = 524534342C4E55B900632F18 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		52888FC32C08ED9E00A611E7 /* Main.storyboard */ = {
@@ -322,6 +398,50 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		524534362C4E55B900632F18 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = CQAJT5B3K8;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				MACOSX_DEPLOYMENT_TARGET = 14.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.akir.EateryTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Eatery.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Eatery";
+			};
+			name = Debug;
+		};
+		524534372C4E55B900632F18 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = CQAJT5B3K8;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				MACOSX_DEPLOYMENT_TARGET = 14.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.akir.EateryTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Eatery.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Eatery";
+			};
+			name = Release;
+		};
 		52888FCC2C08ED9F00A611E7 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -502,6 +622,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		524534382C4E55B900632F18 /* Build configuration list for PBXNativeTarget "EateryTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				524534362C4E55B900632F18 /* Debug */,
+				524534372C4E55B900632F18 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		52888FB52C08ED9D00A611E7 /* Build configuration list for PBXProject "Eatery" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

@@ -7,9 +7,9 @@
 
 import UIKit
 
-struct SignUpElement {
+struct SignUpElementStyle {
     
-    static func setTextLabel(name: String) -> UILabel {
+    static func createTextLabel(name: String) -> UILabel {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = true
         label.text = name
@@ -19,7 +19,7 @@ struct SignUpElement {
         return label
     }
     
-    static func setTextField(name: String) -> UITextField {
+    static func createTextField(name: String) -> UITextField {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = true
         textField.placeholder = name
@@ -28,7 +28,7 @@ struct SignUpElement {
         return textField
     }
     
-    static func setButton(name: String, function: Selector) -> UIButton {
+    static func createButton(name: String, function: Selector) -> UIButton {
         let button = UIButton()
         button.setTitle(name, for: .normal)
         button.setTitleColor(.white, for: .normal)

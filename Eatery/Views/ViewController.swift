@@ -12,14 +12,19 @@ import FirebaseAuth
 import GoogleMaps
 import GooglePlaces
 
+private enum UserMenuConstants {
+    static let buttonTitle = "U"
+    static let title = "User"
+    static let myFriendsInfoTitle = "My friends"
+    static let logOutTitle = "Log out"
+}
+
 class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDelegate, GMSAutocompleteResultsViewControllerDelegate {
     
     // MARK: - Constants
     
     private var mapView = GMSMapView()
     private var placesClient = GMSPlacesClient()
-    private var preciseLocationZoomLevel: Float = 17.0
-    private var approximateLocationZoomLevel: Float = 10.0
     private var marker = GMSMarker()
     private var resultsViewController: GMSAutocompleteResultsViewController?
     private var searchController: UISearchController?
@@ -40,19 +45,16 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
         button.setTitle(UserMenuConstants.buttonTitle, for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 34)
-        button.translatesAutoresizingMaskIntoConstraints = true
-        button.frame.size.width = 50
-        button.frame.size.height = 50
-        button.layer.cornerRadius = button.frame.size.width / 2.0
+        button.translatesAutoresizingMaskIntoConstraints = false
+        let buttonSize = 50.0
+        button.snp.makeConstraints { $0.size.width.equalTo(buttonSize) }
+        button.layer.cornerRadius = buttonSize / 2.0
         button.clipsToBounds = true
         button.backgroundColor = .blue
         return button
     }()
     
-    private let searchBarView: UIView = {
-        let subView = UIView()
-        return subView
-    }()
+    private let searcBarContainerView = UIView()
     
     private var searchFilter: GMSAutocompleteFilter = {
         let filter = GMSAutocompleteFilter()
@@ -61,24 +63,28 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
         return filter
     }()
     
+    private var currentRestarauntInfo: RestaurantInfoModel?
+    
     // MARK: - viewDidLoad
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let userAuth = UserAuthorizer()
+        userAuth.getCurrentUserName()
         
         locationManager.delegate = self
         
         placesClient = GMSPlacesClient.shared()
         
         setMapView()
-        mapView.delegate = self
 
         resultsViewController = GMSAutocompleteResultsViewController()
         resultsViewController?.delegate = self
         searchController = UISearchController(searchResultsController: resultsViewController)
         searchController?.searchResultsUpdater = resultsViewController
         
-        searchBarView.addSubview((searchController?.searchBar)!)
+        searcBarContainerView.addSubview((searchController?.searchBar)!)
         searchController?.searchBar.sizeToFit()
         searchController?.hidesNavigationBarDuringPresentation = false
         definesPresentationContext = true
@@ -86,7 +92,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
         resultsViewController?.autocompleteFilter = searchFilter
         
         mapView.gestureRecognizers?.removeAll()
-        mapView.addSubview(searchBarView)
+        mapView.addSubview(searcBarContainerView)
         setSearchBarViewConstraints()
         view.addSubview(userMenuButton)
 
@@ -94,7 +100,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
         setUserMenuButtonConstraints()
         mapView.isHidden = true
     }
-
+    
     // MARK: - MapView functions
     
     private func setMapView() {
@@ -107,6 +113,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
         )
         
         mapView = GMSMapView(options: options)
+        mapView.delegate = self
         mapView.settings.myLocationButton = true
         mapView.settings.zoomGestures = true
         mapView.settings.scrollGestures = true
@@ -156,7 +163,18 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
             
             if let place = place {
                 self.addMarker(place: place)
-                _ = RestaurantInfoModel(place: place)
+                self.currentRestarauntInfo = RestaurantInfoModel(
+                    name: place.name ?? "no information",
+                    description: place.editorialSummary ?? "",
+                    rating: place.rating.description,
+                    priceLevel: place.priceLevel.rawValue,
+                    address: place.formattedAddress ?? "no information",
+                    website: place.website?.description ?? "no information",
+                    phoneNumber: place.phoneNumber ?? "no information",
+                    url: place.website,
+                    openingHoursArray: place.openingHours?.weekdayText ?? [""],
+                    coordinate: place.coordinate
+                )
             }
         }
     }
@@ -173,6 +191,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
         let VC = RestaurantInfoVC()
         VC.modalPresentationStyle = .popover
         VC.modalTransitionStyle = .crossDissolve
+        VC.restaurantInfo = currentRestarauntInfo
+        VC.completion?(currentRestarauntInfo ?? RestaurantInfoModel(name: "", description: "", rating: "", priceLevel: 0, address: "", website: "", phoneNumber: "", openingHoursArray: [""], coordinate: GlobalConstants.defaultLocation.coordinate))
         present(VC, animated: true, completion: nil)
     }
     
@@ -191,7 +211,18 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
         ])
         
         addMarker(place: place)
-        _ = RestaurantInfoModel(place: place)
+        currentRestarauntInfo = RestaurantInfoModel(
+            name: place.name ?? "no information",
+            description: place.editorialSummary ?? "",
+            rating: place.rating.description,
+            priceLevel: place.priceLevel.rawValue,
+            address: place.formattedAddress ?? "no information",
+            website: place.website?.description ?? "no information",
+            phoneNumber: place.phoneNumber ?? "no information",
+            url: place.website,
+            openingHoursArray: place.openingHours?.weekdayText ?? [""],
+            coordinate: place.coordinate
+        )
         finished()
     }
     
@@ -201,7 +232,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
     }
     
     private func setSearchBarViewConstraints() {
-        searchBarView.snp.makeConstraints { make in
+        searcBarContainerView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.top.equalToSuperview().offset(50)
             make.leading.equalToSuperview()
@@ -215,7 +246,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
         userMenuButton.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(120)
             make.trailing.equalToSuperview().offset(-15)
-            make.size.width.equalTo(50)
         }
     }
     
@@ -231,6 +261,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
         let logOut = UIAction(title: UserMenuConstants.logOutTitle) { _ in
             do {
                 try Auth.auth().signOut()
+                CurrentUser.shared.name = ""
                 let destinationVC = SignUpViewController()
                 destinationVC.modalPresentationStyle = .fullScreen
                 destinationVC.modalTransitionStyle = .crossDissolve
@@ -240,20 +271,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDel
             }
         }
         
-        let userMenu = UIMenu(title: UserMenuConstants.title, children: [myFriendsInfo, logOut])
+        let userMenu = UIMenu(title: "\(UserMenuConstants.title) \(Auth.auth().currentUser?.email ?? "")", children: [myFriendsInfo, logOut])
         userMenuButton.menu = userMenu
         userMenuButton.showsMenuAsPrimaryAction = true
-        userMenuButton.addTarget(nil, action: #selector(userMenuButtonClicked), for: .menuActionTriggered)
     }
-    
-    @objc func userMenuButtonClicked() {
-        print("User menu tapped")
-    }
-}
-
-private enum UserMenuConstants {
-    static let buttonTitle = "U"
-    static let title = "User"
-    static let myFriendsInfoTitle = "My friends"
-    static let logOutTitle = "Log out"
 }

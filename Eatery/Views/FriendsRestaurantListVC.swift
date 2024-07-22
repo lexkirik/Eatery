@@ -39,7 +39,12 @@ class FriendsRestaurantListVC: UIViewController, UITableViewDataSource, UITableV
     
     private var longitude = GlobalConstants.defaultLocation.coordinate.longitude
     private var latitude = GlobalConstants.defaultLocation.coordinate.latitude
-    private let defaultModels = [FriendRestaurantOption(friendName: "", restaurant: "No visited places in 12 hours", longitude: 0.0, latitude: 0.0)]
+    private let defaultModels = [FriendRestaurantOption(
+        friendName: "",
+        restaurant: "No visited places in 12 hours",
+        longitude: 0.0,
+        latitude: 0.0
+    )]
     
     // MARK: - viewDidLoad
     
@@ -110,20 +115,19 @@ class FriendsRestaurantListVC: UIViewController, UITableViewDataSource, UITableV
     // MARK: - Firestore functions
     
     private func getDataFromFirestore() {
-        let userAuthorizer = UserAuthorizer()
-        userAuthorizer.getCurrentUserName(currentAuthUser: Auth.auth().currentUser)
-        
         let restaurantInfoPostMaker = RestaurantInfoPostMaker()
         restaurantInfoPostMaker.getDataFromRestaurantInfoPostForLast12Hours { result in
-            if result == .success {
-                self.models.append(FriendRestaurantOption(
-                    friendName: RestaurantInfoPostMaker.friendName,
-                    restaurant: RestaurantInfoPostMaker.restaurant,
-                    longitude: RestaurantInfoPostMaker.longitude,
-                    latitude: RestaurantInfoPostMaker.latitude)
-                )
-            }
-            if result == .error {
+            let friendList = result.option
+            if result == .success(friendList ?? FriendRestaurantOption(
+                friendName: "",
+                restaurant: "",
+                longitude: GlobalConstants.defaultLocation.coordinate.longitude,
+                latitude: GlobalConstants.defaultLocation.coordinate.latitude
+            )) {
+                if let friendList = result.option {
+                    self.models.append(friendList)
+                }
+            } else {
                 print("Error getting data from a Firestore post")
             }
             self.tableView.reloadData()
