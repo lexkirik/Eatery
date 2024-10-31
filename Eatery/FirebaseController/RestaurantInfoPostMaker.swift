@@ -9,23 +9,29 @@ import Foundation
 import FirebaseAuth
 import FirebaseFirestore
 
+private enum RestaurantInfoPost {
+    static var collectionName = "Restaurants"
+    static var friendEmail = "friendEmail"
+    static var friendName = "friendName"
+    static var restaurant = "restaurant"
+    static var date = "date"
+    static var latitude = "latitude"
+    static var longitude = "longitude"
+}
+
 class RestaurantInfoPostMaker: RestaurantInfoPostMakerProtocol {
     private let firestoreDatabase = Firestore.firestore()
     private var firestoreReference: DocumentReference? = nil
     private let timeNow = Date().timeIntervalSince1970
-    static var friendName = ""
-    static var restaurant = ""
-    static var longitude = 0.0
-    static var latitude = 0.0
     
-    func addRestaurauntInfoPost() {
+    func addRestaurauntInfoPost(name: String, latitude: Double, longitude: Double) {
         let firestorePost = [
             RestaurantInfoPost.friendEmail : Auth.auth().currentUser?.email ?? "email",
-            RestaurantInfoPost.friendName : CurrentUser.username,
-            RestaurantInfoPost.restaurant : RestaurantInfoModel.name,
+            RestaurantInfoPost.friendName : CurrentUser.shared.name,
+            RestaurantInfoPost.restaurant : name,
             RestaurantInfoPost.date : timeNow,
-            RestaurantInfoPost.latitude : RestaurantInfoModel.coordinate.latitude,
-            RestaurantInfoPost.longitude : RestaurantInfoModel.coordinate.longitude
+            RestaurantInfoPost.latitude : latitude,
+            RestaurantInfoPost.longitude : longitude
         ] as [String : Any]
         
         firestoreReference = firestoreDatabase.collection(RestaurantInfoPost.collectionName).addDocument(data: firestorePost, completion: { (error) in
@@ -45,29 +51,21 @@ class RestaurantInfoPostMaker: RestaurantInfoPostMakerProtocol {
                 if snapshot?.isEmpty != true && snapshot != nil {
                     for document in snapshot!.documents {
                         if let name = document.get(RestaurantInfoPost.friendName) as? String, let rest = document.get(RestaurantInfoPost.restaurant) as? String {
-                            if name != CurrentUser.username {
+                  //          if name != CurrentUser.shared.username {
                                 if let longitude = document.get(RestaurantInfoPost.longitude) as? Double, let latitude = document.get(RestaurantInfoPost.latitude) as? Double {
-                                    RestaurantInfoPostMaker.friendName = name
-                                    RestaurantInfoPostMaker.restaurant = rest
-                                    RestaurantInfoPostMaker.longitude = longitude
-                                    RestaurantInfoPostMaker.latitude = latitude
-                                    completion(.success)
+                                    let option = FriendRestaurantOption(
+                                        friendName: name,
+                                        restaurant: rest,
+                                        longitude: longitude,
+                                        latitude: latitude
+                                    )
+                                    completion(.success(option))
                                 }
                             }
                         }
                     }
                 }
-            }
+          //  }
         }
     }
-}
-
-private enum RestaurantInfoPost {
-    static var collectionName = "Restaurants"
-    static var friendEmail = "friendEmail"
-    static var friendName = "friendName"
-    static var restaurant = "restaurant"
-    static var date = "date"
-    static var latitude = "latitude"
-    static var longitude = "longitude"
 }
